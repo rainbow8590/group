@@ -1,0 +1,288 @@
+<style lang="less">
+  @import '../util/public.less';
+  .icon{
+    width: 100%;
+    height: 295rpx;
+    font-size: 36rpx;
+    color: #fff;
+    background: linear-gradient(#2bc360, #56d97c);
+    text-align: center;
+    padding-top:46rpx;
+    image{
+      width: 52rpx;
+      height: 52rpx;
+      vertical-align: middle;
+      padding-right: 10rpx;
+    }
+  }
+  .now-detail{
+    position: absolute;
+    left: 50%;
+    top: 154rpx;
+    margin-left: -344rpx;
+    width: 688rpx;
+    padding-top: 74rpx;
+    padding-bottom: 32rpx;
+    margin-bottom: 24rpx;
+    background: #fff;
+    border-radius: 18rpx;
+    .state{
+      font-size: 30rpx;
+      line-height: 76rpx;
+      text-align: center;
+    }
+    .red{
+      color: #ff3c00;
+    }
+    .group-avtor{
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      padding: 0 50rpx;
+      .item{
+        padding: 0 25rpx 24rpx 25rpx;
+        position: relative;
+        
+        .avtor{
+          width:132rpx;
+          height: 132rpx;
+          border-radius: 50%;
+          border: 2rpx solid @baseColor;
+          overflow: hidden;
+          font-size: 100rpx;
+          color: #c9c9c9;
+          text-align: center;
+          image{
+            width:132rpx;
+            height: 132rpx;
+          }
+        }
+        .avtor-name{
+          padding-top: 24rpx;
+          font-size: 26rpx;
+          color: #b1b0b0;
+          text-align: center;
+          height:30rpx;
+
+        }
+        .avtor-leader{
+          position: absolute;
+          left: 50%;
+          bottom: 72rpx;
+          margin-left: -50rpx;
+          width: 100rpx;
+          color: #fff;
+          font-size: 26rpx;
+          text-align: center;
+          background: @baseColor;
+          border-radius: 30rpx;
+        }
+        .avtor1{
+          border: 1px dashed #c9c9c9;
+        }
+      }
+    }
+    .btn{
+      width: 590rpx;
+      height: 85rpx;
+      line-height: 85rpx;
+      font-size: 34rpx;
+      margin-top: 26rpx;
+      border-radius: 45rpx;
+    }
+    .btn1{
+      color: #fff;
+      border-color: @baseColor;
+      background: @baseColor;
+      box-shadow: 0 8rpx 20rpx rgba(34,153,90,.5)
+    }
+    .btn2{
+      color: @baseColor;
+      background: #fff;
+      border: 2rpx solid @baseColor;
+    }
+   
+  }
+ 
+
+
+  
+</style>
+<template>
+  <view class="container">
+    <view class="icon"><image src="../image/ok.png" />发起拼团成功</view>
+    <view class="now-detail">
+      
+      <view class="group-avtor flex">
+        <repeat for="{{activityInfo.project_group_user}}" key="index" index="index" item="item">
+          <view class="item">
+              <view class="avtor"><image src="{{item.avatar_url}}"/></view>
+              <view class="avtor-name">{{item.nickname}}</view>
+              <view class="avtor-leader" wx:if="{{index == 0}}">团长</view>
+          </view>
+        </repeat>
+        <repeat for="{{activityInfo.project_group_num - activityInfo.project_group_user.length}}" key="index" index="index" item="item">
+          <view class="item">
+              <view class="avtor">?</view>
+              <view class="avtor-name"></view>
+          </view>
+        </repeat>
+      </view>
+      <!-- 拼团成功提示语 -->
+      <view class="success" wx:if="{{activityInfo.project_group_num > activityInfo.project_group_user.length}}">
+        <view class="state">邀请<text class="red">{{activityInfo.project_group_num-activityInfo.project_group_user.length}}人</text>完成拼团</view>
+      </view>
+      <!-- 邀请好友, 拼团详情 按钮 -->
+      <button class="btn btn1" wx:if="{{activityInfo.project_group_num == activityInfo.project_group_user.length}}" @tap="showGroupCode">加入活动微信群</button>
+      <button class="btn btn1" @tap="showFriend" wx:elif="{{activityInfo.project_group_num > activityInfo.project_group_user.length}}">邀请好友</button>
+      <button class="btn btn2" @tap="goGroupDetail" wx:if="{{activityInfo.project_group_num > activityInfo.project_group_user.length}}">拼团详情</button>
+    </view>
+
+    <view class="zoom {{showFriend ?'fadein':''}} {{hideFriend?'fadeout':''}}" >
+      <view class="zoom-wrap">
+        <view class="zoom-btns flex">
+          <button open-type="share"><image src="../image/share-friend.png" />分享给好友</button>
+          <button @tap="goSharePic"><image src="../image/share-pic.png" />生成分享图片</button>
+        </view>
+        <view class="close" @tap="closeFriend"><image src="../image/circle-close.png" /></view>
+      </view>
+    </view>
+    <!-- 加群提醒 -->
+    <view class="paypop {{show ?'fadein':''}} {{hide ?'fadeout':''}}">
+      <view class="paypop-wrap paypop-wrap1">
+          <view class="close close1"><text>加群提醒</text><image src="../image/close.png" @tap="closeGroupCode" /></view>
+          <view class="info info1">请在加群页面：</view>
+          <view class="price price1 flex">
+            <text>{{activityInfo.project_wx_reply_text}}</text>
+            <text class="codedes">获取活动微信群二维码</text>
+          </view>
+          <button open-type="contact">知道了,去加群</button>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import wxRequest from '../util/request'
+  import {showFriend,closeFriend,showGroupCode,closeGroupCode} from '../util/public'
+  export default class LanuchGroup extends wepy.page {
+    config = {
+      navigationBarTitleText: '发起拼团',
+      // disableScroll: true
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+      show: false,
+      hide:false,
+      isShowFriend: false, // 邀请好友
+      showFriend: false,
+      hideFriend: false,
+      projectGroupNum: 0, // 成团人数
+      ActicityUser: wx.getStorageSync('ActicityUser'), // 账户信息
+      activityInfo:{}
+    }
+
+    computed = {
+    }
+
+    methods = {
+      // 拼团详情
+      goGroupDetail(){
+        this.$navigate('/pages/group-detail',{activityId:this.activityInfo.id,activityStatus:this.activityInfo.order_status});
+      },
+      // 生成图片
+      goSharePic(){
+        let groupInviterId = this.activityInfo.project_group_user.length > 0 ? this.activityInfo.project_group_user[0].user_id:this.ActicityUser.user_id
+        this.$navigate('/pages/share-pic',{project_id:this.activityInfo.id,group_inviter_id:groupInviterId});
+      },
+      // 邀请好友
+      showFriend(){
+        showFriend(this)
+      },
+      // 关闭支付弹窗
+      closeFriend(){
+        closeFriend(this)
+      },
+      // 点击加微信群 
+      showGroupCode(){
+        showGroupCode(this);
+      },
+       // 关闭加群弹窗
+      closeGroupCode(){
+        closeGroupCode(this);
+      },
+    }
+
+    events = {
+     
+    }
+    //分享给好友
+    onShareAppMessage(){
+      var that = this;
+      let groupInviterId = this.activityInfo.project_group_user[0].user_id
+      let groupTitle = this.activityInfo.project_title;
+      let groupId = this.activityInfo.id;
+      return {
+        title:groupTitle,
+        path: '/pages/group-detail?groupInviterId='+groupInviterId+'&activityId='+groupId,
+        imageUrl:this.activityInfo.project_top_image,
+        success: function(res){
+          that.showFriend = false;
+          that.hideFriend = true;
+          that.$apply();
+        },
+        fail: function(){
+          // console.log(333333)
+        }
+      }
+    }
+   // 获取活动详情数据
+    getActivity(){
+     
+      let groupInviterId = this.activity.project_group_user[0].user_id
+      let params = {
+        method:'post',
+        data:{id: this.activity.id, group_inviter_id: groupInviterId}
+        // data:{id: 42, group_inviter_id: 0}
+      }
+      wxRequest(params,'/project/item').then(res => {
+        console.log('测试昵称')
+        console.log(res)
+        this.activityInfo = res.data.data;
+        this.ajaxOver =  true;
+        this.$apply();
+      })
+    }
+
+    onLoad(params) {
+      
+      
+      this.activity = JSON.parse(params.activityInfo)
+      this.ActicityUser = wx.getStorageSync('ActicityUser')
+      // console.log(this.activity)
+      // console.log(this.activity.project_group_num)
+      // console.log(this.activity.project_group_user.length)
+      this.getActivity()
+      // 查看是否授权过
+      // wx.getSetting({
+      //   success: (res) => {
+      //     console.log(res)
+      //     var data = res.authSetting;
+      //     if(!data.authSetting){
+      //       wx.authorize({
+      //           scope: 'scope.userInfo',
+      //           success(res) {
+      //              console.log(res)
+      //           }
+      //       })
+      //     }
+      //   }
+      // })
+    }
+  }
+</script>

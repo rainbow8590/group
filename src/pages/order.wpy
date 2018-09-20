@@ -1,0 +1,297 @@
+<style lang="less">
+  @import '../util/public.less';
+  .orders{
+    width: 100%;
+  }
+  .user{
+    width: 100%;
+    height: 350rpx;
+    background:linear-gradient(#2bc360, #56d97c);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-size: 30rpx;
+    line-height: 30rpx;
+    .userinfo{
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    button{
+      width: 200rpx;
+      height: 200rpx;
+      background: rgba(100,255,102,.1);
+      border-radius: 50%;
+      color: #fff;
+      line-height: 200rpx;
+      border: 1px solid #64ff66;
+    }
+    .avtor{
+      width: 180rpx;
+      height:180rpx;
+      border: 5rpx solid #158938;
+      border-radius: 50%;
+      overflow: hidden;
+      margin-bottom: 32rpx;
+      image{
+        width: 180rpx;
+        height:180rpx;
+      }
+    }
+  }
+  .title{
+    width: 100%;
+    height: 70rpx;
+    line-height: 70rpx;
+    padding-left: 32rpx;
+    background: #f2f1f1;
+    font-size: 30rpx;
+    box-sizing: border-box;
+  }
+  .no-order{
+    width: 100%;
+    font-size: 28rpx;
+    line-height: 200rpx;
+    text-align: center;
+    color: #999;
+  }
+  .order{
+    width:100%;
+    padding: 0 34rpx;
+    box-sizing: border-box;
+    .order-wrap{
+      padding: 40rpx 0;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e4e4e4;
+    }
+    .order-title{
+      font-size: 28rpx;
+      line-height: 28rpx;
+      margin-bottom: 16rpx;
+    }
+    .order-time{
+      font-size: 26rpx;
+      line-height: 26rpx;
+      color: #969696;
+    }
+    .order-state{
+      font-size: 26rpx;
+      align-items: center;
+    }
+    .order-arrow{
+      width: 7px;
+      height: 7px;
+      border-top: 1px solid #1e1e1e;
+      border-right: 1px solid #1e1e1e;
+      transform: rotate(45deg);
+      margin-left: 28rpx;
+    }
+  }
+</style>
+<template>
+  <view class="container">
+    <!-- 订单页面 -->
+    <view class="orders">
+      <view class="user flex">
+        <view wx:if="{{ActicityUser}}" class="userinfo flex">
+          <view class="avtor"><image src="{{ActicityUser.avatar_url}}" /></view>
+          <text>{{ActicityUser.nick_name}}</text>
+        </view>
+        <button wx:if="{{!ActicityUser}}"  open-type="getUserInfo" @getuserinfo="goLogin" formType="submit">登录</button>
+      </view>
+      <view class="title">我的订单</view>
+      <view class="no-order" wx:if="{{!ActicityUser}}">还没登录, 去登录~</view>
+      <view class="no-order" wx:if="{{ActicityUser&&!orderList.length}}">还没有订单~</view>
+      <view class="order" wx:if="{{orderList.length}}">
+        <repeat for="{{orderList}}" key="index" index="index" item="item">
+          <form @submit="goOrderDetail('{{index}}')" report-submit="true">
+            <view class="order-wrap flex" >
+              <view class="order-info">
+                <view class="order-title">{{item.project_title}}</view>
+                <view class="order-time">{{item.create_time}}</view>
+              </view>
+              <view class="order-state flex">
+                <text>{{item.order_state }}</text> <text class="order-arrow"></text></view>
+            </view>
+            <button class="form-btn" formType="submit">11</button>
+          </form>
+        </repeat>
+      </view>
+    </view>
+    
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import wxRequest from '../util/request'
+  import {timestampToTime} from '../util/public'
+  
+  export default class Order extends wepy.page {
+    config = {
+      navigationBarTitleText: '个人中心',
+      // disableScroll: true
+    }
+    components = {}
+
+    mixins = []
+
+    data = {
+      // token: wx.getStorageSync('token'),
+      ActicityUser: wx.getStorageSync('user'),
+      orderList:[]
+    }
+
+    computed = {}
+
+    methods = {
+      goOrderDetail(tipIndex,e){
+        let activityInfo = this.orderList[tipIndex]
+        this.$navigate('/pages/order-detail',{orderId: activityInfo.order_id,formId:e.detail.formId})
+        // this.$navigate('/pages/launch-group',{orderId: activityInfo.order_id,formId:e.detail.formId})
+      },
+      goLogin(res){
+        console.log(1111)
+        console.log(res)
+        if(res.detail.errMsg.indexOf('ok') != -1){
+          // 授权信息后登陆
+          wx.login({
+            success: re => {
+              if(re.code){
+                let params = {
+                  method:'post',
+                  data:{
+                    code:re.code,
+                    type: 1,
+                    encrypted_data:res.detail.encryptedData,
+                    iv: res.detail.iv,
+                  }
+                }
+                console.log(121212121212121)
+                  // 登录
+                  wxRequest(params,'/login').then(r => {
+                    
+                    console.log(r)
+                      // 储存token
+                      wx.setStorageSync('token', r.data.data.token)
+                      // wx.setStorageSync('user', r.data.data.user)
+                      // 登录完成 跳转到登录之前的页面,并将携带用户信息
+                      this.$navigate('/pages/login',{
+                        from: '/'+this.$wxpage.route,
+                        // raw_data: res.detail.rawData,
+                        // signature: res.detail.signature,
+                        encrypted_data:res.detail.encryptedData,
+                        iv:res.detail.iv,
+                      })
+                        
+                  })
+              }
+            }
+            
+          })
+         
+        }
+        
+      }
+    }
+    events = {
+      // 组件上的事件
+    }
+    
+    /* onTabItemTap(item) {
+      // console.log(this.$wxpage.route)
+      // 点击订单页面的时候, 检查是否登录过
+      if(item.index == 1){
+        // 没有登录就跳到登录页面
+        if(!this.username){
+          this.$navigate('/pages/login',{from:'/'+this.$wxpage.route})
+        }
+      }
+    } */
+    // 获取订单列表数据
+    getOrderList(){
+      this.orderList = [];
+      console.log(this.orderList)
+      wxRequest({method:'post'},'/order/list').then(res => {
+        if(res.data.code == 1){
+          console.log(res.data.data)
+          // this.orderList = res.data.data;
+          for(let i = 0; i < res.data.data.length; i++){
+            let order = res.data.data[i]
+            order.create_time = order.create_time.substr(0, order.create_time.lastIndexOf(':'))
+            if(order.order_type == 1){
+              if(order.order_status == 1){
+                order.order_state ='购买成功'
+              }else if(order.order_status == 0){
+                order.order_state ='未付款'
+              }else{
+                order.order_state ='已退款'
+              }
+            }else if(order.order_type == 2){
+              if(order.order_status == 1){
+                order.order_state ='团购成功'
+              }else if(order.order_status == 0){
+                order.order_state ='团购中'
+              }else{
+                order.order_state ='已退款'
+              }
+            }
+            
+            if(order.order_status == 1){
+              this.orderList.push(order)
+            }
+            // var times = timestampToTime(order.create_time)
+            // order.create_date = times.Y +'/'+times.M +'/'+times.D +'  '+ times.h +':' + times.m
+            // order.order_state = order.order_status == 0?'购买成功':'购买失败'
+          }
+          console.log(this.orderList)
+          this.$apply();
+        }else{
+          wx.showModal({
+            title: '提示',
+            content: res.data.msg,
+            showCancel: false
+          })
+        }
+        
+        // console.log(this.orderList)
+      })
+    }
+    
+    onLoad(params) {
+      console.log(34434)
+       
+      // this.token =  wx.getStorageSync('token');
+      //首次进入订单页面, 先判断是否登录, 登录了再请求订单列表
+      this.ActicityUser =  wx.getStorageSync('ActicityUser');
+      // if(this.ActicityUser){
+      //   this.getOrderList();
+      // }
+     
+    }
+    
+    onShow(){
+      // console.log(this.$parent.globalData.already)
+      //因为switch不执行onLoad, 需要在onShow中再判断一次 
+      // onLoad没有登录,获取onShow时的登录状态,
+      if(!this.ActicityUser){
+        this.ActicityUser =  wx.getStorageSync('ActicityUser');
+      } 
+      //检测到登录后再获取订单列表
+      // if(this.ActicityUser && this.$parent.globalData.isBuy || this.$parent.globalData.already == 1){
+      //   this.getOrderList();
+      // }
+      if(this.ActicityUser){
+        this.getOrderList();
+      }
+    }
+    onHide(){
+      // console.log(1221212) 
+      this.$parent.globalData.already = 0;
+      this.$parent.globalData.isBuy = false
+    }
+  
+  }
+</script>

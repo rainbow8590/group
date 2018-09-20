@@ -1,0 +1,199 @@
+<style lang="less">
+  @import '../util/public.less';
+  // page{
+  //   overflow-y: scroll;
+  // }
+  .container{
+    padding: 0 34rpx 0 34rpx;
+    box-sizing: border-box;
+    justify-content: flex-start;
+    // overflow-y: scroll;
+  }
+  
+  .activity{
+    width: 100%;
+    padding-top: 34rpx;
+    padding-bottom: 58rpx;
+    border-bottom: 1px solid #e4e4e4;
+    box-sizing: border-box;
+    .banner{
+      image{
+        width: 100%;
+      }
+    }
+  }
+
+  .ac-btn{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100rpx;
+    height: 100rpx;
+    z-index: 9999;
+  }
+  
+</style>
+<template>
+  <view class="container" style="height:{{windowHeight}}px">
+    <repeat for="{{activityList}}" key="index" index="index" item="item">
+      <form @submit="goGroupDetail('{{item.id}}')" report-submit="true">
+        <view class="activity" >
+          <view class="banner"><image src="{{item.project_image}}" mode="widthFix" /></view>
+          <!-- <view class="banner"><image src="../image/demo.jpg" mode="widthFix" /></view> -->
+          <view class="activity-title">{{item.project_title}}</view>
+          <view class="info">
+            <view class="buy flex">
+                <view class="des">
+                  <view class="time">{{item.project_time}}</view>
+                  <!-- 单独购买价格展示 -->
+                  <view class="price flex"  wx:if="{{item.project_type==1}}">
+                    <view class="now-price">¥{{item.project_price}}</view>
+                  </view>
+                  <!-- 仅团购价格展示 -->
+                  <view class="price flex"  wx:if="{{item.project_type==2}}">
+                    <view class="now-price">¥{{item.project_group_price}}</view>
+                    <view class="old-price flex">
+                      <text class="old" style="opacity:0">¥{{item.project_price}}</text>
+                      <text>{{item.project_group_num}}人团</text>
+                    </view>
+                  </view>
+                  <!-- 单独购买和团购价格展示 -->
+                  <view class="price flex"  wx:if="{{item.project_type==3}}">
+                    <view class="now-price">¥{{item.project_group_price}}</view>
+                    <view class="old-price flex">
+                      <text class="old">¥{{item.project_price}}</text>
+                      <text>{{item.project_group_num}}人团</text>
+                    </view>
+                  </view>
+                </view>
+                <view class="btn">
+                  <button style="opacity:{{item.order_status == -1? '1': '0'}}">购买</button>
+                  <!-- <button @tap.stop="goBuy('{{item.id}}')">购买</button> -->
+                  <view>{{item.signup_num}}人已购买</view>
+                </view>
+            </view>
+          </view>
+        </view>
+        <button class="form-btn" formType="submit"> </button>
+      </form>
+    </repeat>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  // import 'wepy-async-function'
+  // import API from '../mixins/data'
+  import wxRequest from '../util/request'
+  
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '高思乐享',
+      // disableScroll: true
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+      activityList:[],
+      windowHeight:0,
+      // countDown:10,
+      // status: 1
+    }
+
+    computed = {
+
+    }
+
+    methods = {
+      goGroupDetail(id,e){
+        console.log(id)
+        // 将formId绑定到活动列表页面. 点击就获取formId, 然后后台存储备用
+        console.log(e.detail.formId)
+        this.$navigate('/pages/group-detail',{activityId:id,form_id:e.detail.formId})
+      },
+
+      
+       
+      /* goBuy(code){
+        //根据活动编码进入到详情页
+        this.$navigate('/pages/group-detail',{activityId:id})
+        // console.log(index)
+        // 未登录时 先登录
+        // if(!this.username){
+        //   this.$navigate('/pages/login',{from:this.$wxpage.route})
+        // }else{
+        //   // 登录时 跳转到详情页
+        //   this.$navigate('/pages/group-detail',{index:index})
+        // }
+      } */
+    }
+
+    events = {
+     
+    }
+
+
+   /*  timeD(){
+     
+          this.countDown = 10;
+          clearInterval(this.timer)
+          this.timer = setInterval(()=>{
+            
+            if(this.countDown <=0){
+              clearInterval(this.timer)
+              this.status = 2;
+              // this.$apply();
+            }else{
+              // let hours = Number(this.Countdown(countdown).hour) + this.Countdown(countdown).day*24;
+              // this.hours = hours < 10? '0'+hours : hours;
+              // this.mins = this.Countdown(countdown).min;
+              // this.secs = this.Countdown(countdown).sec;
+              this.countDown--;
+            }
+            this.$apply();
+          },1000)
+       
+    } */
+/* 
+    onTabItemTap(item) {
+      console.log(this.$wxpage.route)
+      // 点击订单页面的时候, 检查是否登录过
+      if(item.index == 1){
+        // 没有登录就跳到登录页面
+        if(!this.username){
+          this.$redirect('/pages/login',{from:'/'+this.$wxpage.route})
+        }
+        //已经登录 跳到订单页面
+        else  
+        {
+          //this.$navigate('/pages/login')
+        }
+      }
+      
+    } */
+
+
+    // 获取活动列表数据
+    getActivityList(){
+      wxRequest({method:'post'},'/list').then(res=>{
+        console.log(res)
+        // this.activityList[0] = res.data.data[0]
+        this.activityList = res.data.data;
+        this.$apply();
+      })
+    }
+    onLoad() {
+      console.log()
+      // var res = wx.getSystemInfoSync()
+      this.windowHeight = this.$parent.globalData.windowHeight;
+      // this.timeD()
+    }
+    onShow(){
+      // 获取活动列表
+      this.getActivityList();
+    }
+  }
+</script>

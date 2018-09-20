@@ -1,0 +1,185 @@
+<style lang="less">
+  @import '../util/public.less';
+  .container{
+    height: 100%;
+  }
+  .lesson-info{
+    width: 690rpx;
+    flex-direction: column;
+    border-bottom: 1px solid #e4e4e4;
+    line-height: 50rpx;
+    padding-bottom: 50rpx;
+    text{
+      font-size: 26rpx;
+      color: #313131;
+    }
+    .lesson-title{
+      font-size: 30rpx;
+    }
+    .lesson-time{
+      font-size: 26rpx;
+    }
+    .lesson-price{
+      font-size: 36rpx;
+      color: #ff3c00;
+      
+    }
+  }
+  .lesson-state{
+    .icon{
+      flex-direction: column;
+      align-items: center;
+      padding-top: 60rpx;
+      image{
+        width:100rpx;
+        height: 100rpx;
+        text-align: center;
+      }
+      .success{
+        font-size: 36rpx;
+        text-align: center;
+        line-height: 100rpx;
+      }
+    }
+    .tip{
+      font-size: 26rpx;
+      padding-bottom: 20rpx;
+      text-align:center;
+      .red{
+        color: #ff3c00;
+      }
+    }
+    .btn{
+      width: 590rpx;
+      height: 85rpx;
+      line-height: 85rpx;
+      font-size: 34rpx;
+      margin-top: 26rpx;
+      border-radius: 45rpx;
+    }
+    .btn1{
+      color: #fff;
+      border-color: @baseColor;
+      background: @baseColor;
+      box-shadow: 0 8rpx 20rpx rgba(34,153,90,.5)
+    }
+    .btn2{
+      color: @baseColor;
+      background: #fff;
+      border: 2rpx solid @baseColor;
+    }
+    
+  }
+
+</style>
+
+<template>
+  <view class="container">
+    <view class="lesson-info flex">
+      <text class="lesson-title"><text>活动名称:</text> {{activityInfo.project_title}}</text>
+      <text class="lesson-time"><text>活动时间:</text> {{activityInfo.project_time}}</text>
+      <text class="lesson-price"><text>活动价格:</text> ¥{{activityInfo.project_price}}</text>
+    </view>
+    <view class="lesson-state">
+      <view class="icon flex">
+        <image src="../image/success.png" />
+        <view class="success">支付成功</view>
+      </view>
+      <view class="tip">请于<text class="red">{{activityInfo.project_time}}</text>准时入群参加活动</view>
+      <button class="btn btn1" @tap="showGroupCode">加入活动微信群</button>
+      <button class="btn btn2" @tap="goGroupDetail">查看活动</button>
+    </view>
+    <!-- 加群提醒 -->
+    <view class="paypop {{show ?'fadein':''}} {{hide ?'fadeout':''}}">
+      <view class="paypop-wrap paypop-wrap1">
+          <view class="close close1"><text>加群提醒</text><image src="../image/close.png" @tap="closeGroupCode" /></view>
+          <view class="info info1">请在加群页面：</view>
+          <view class="price price1 flex">
+            <text>{{activityInfo.project_wx_reply_text}}</text>
+            <text class="codedes">获取活动微信群二维码</text>
+          </view>
+          <button open-type="contact">知道了,去加群</button>
+      </view>
+    </view>
+    <!-- <view class="paypop {{show ?'fadein':''}} {{hide ?'fadeout':''}}">
+      <view class="paypop-wrap paypop-wrap1">
+          <view class="close close1"><text>加群提醒</text><image src="../image/close.png" @tap="closeGroupCode" /></view>
+          <view class="info info1">请在加群页面：</view>
+          <view class="price price1 flex">
+            <text>回复 {{activityInfo.project_wx_reply_text}}</text>
+            <text class="codedes">获取活动微信群二维码</text>
+          </view>
+          <button open-type="contact">知道了,去加群</button>
+      </view>
+    </view> -->
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import {showGroupCode,closeGroupCode} from '../util/public'
+  
+  export default class PaySuccess extends wepy.page {
+    config = {
+      navigationBarTitleText: '支付成功',
+      // disableScroll: true
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+      isShowGroupCode: false,
+      show: false,
+      hide: false,
+      activityInfo:{}
+    }
+
+    computed = {
+      
+    }
+
+    methods = {
+      // 查看活动
+      goGroupDetail(){
+        this.$navigate('/pages/group-detail',{activityId:this.activityInfo.id,activityStatus:this.activityInfo.order_status});
+      },
+      // 点击加微信群 
+      showGroupCode(){
+        showGroupCode(this);
+      },
+      // 关闭加群弹窗
+      closeGroupCode(){
+        closeGroupCode(this);
+      },
+    }
+
+    events = {
+     
+    }
+    
+    
+
+    onLoad(params) {
+      console.log(params)
+      this.activityInfo = JSON.parse(params.activityInfo);
+      console.log(this.activityInfo)
+      // 查看是否授权过
+      // wx.getSetting({
+      //   success: (res) => {
+      //     console.log(res)
+      //     var data = res.authSetting;
+      //     if(!data.authSetting){
+      //       wx.authorize({
+      //           scope: 'scope.userInfo',
+      //           success(res) {
+      //              console.log(res)
+      //           }
+      //       })
+      //     }
+      //   }
+      // })
+    }
+  }
+</script>

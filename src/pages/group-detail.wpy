@@ -1,0 +1,1177 @@
+<style lang="less">
+  @import '../util/public.less';
+  .container{
+    padding-bottom:110rpx; 
+    height: 100%;
+    overflow-y: scroll;
+  }
+  image{
+    width: 100%;
+    // height: 400rpx;
+  }
+  .top-banner{
+    width: 100%;
+    height: 400rpx;
+    overflow: hidden;
+  }
+  .group-detail{
+    width:100%;
+    padding: 50rpx 32rpx;
+    box-sizing: border-box;
+    .group-title{
+      font-size: 36rpx;
+    }
+    .group-date{
+      font-size: 26rpx;
+      color: #3c3c3c;
+    }
+    .group-price{
+      margin-top: 34rpx;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .newprice{
+        font-size: 44rpx;
+        color: #ff3c00;
+      }
+      .oldprice{
+        margin-left: 24rpx;
+        font-size: 24rpx;
+        line-height: 28rpx;
+        color: #b1b0b0;
+        flex-direction: column;
+        .old{
+          text-decoration: line-through;
+        }
+      }
+      .num{
+        font-size: 26rpx;
+        color: #3c3c3c;
+      }
+    }
+    
+  }
+  .btns{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 110rpx;
+    color: #fff;
+    font-size: 30rpx;
+    background: #fff;
+    .btn{
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+    }
+    button{
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      color: #fff;
+      font-size: 30rpx;
+      line-height: 40rpx;
+      background: rgba(0,0,0,0);
+      
+    }
+    .redirect{
+      width: 50%;
+      height: 110rpx;
+      background: #49d87b;
+      // button{
+      //   line-height: 90rpx;
+      // }
+    }
+    .gogroup{
+      width: 50%;
+      height: 110rpx;
+      background: @baseColor;
+      // button{
+      //   line-height: 110rpx;
+      // }
+    }
+    .redirect1{
+      width: 40%;
+      line-height: 90rpx;
+      height: 90rpx;
+      // button{
+      //   line-height: 90rpx;
+      // }
+    }
+    .redirect2{
+      width: 40%;
+      line-height: 110rpx;
+      background: #fff;
+      color: @baseColor;
+      border-top: 2rpx solid @baseColor;
+      button{
+        line-height: 110rpx;
+      }
+    }
+    .redirect3{
+      width: 52%!important;
+    }
+    .gogroup1{
+      width: 60%;
+      line-height: 90rpx;
+      height: 90rpx;
+      button{
+        line-height: 90rpx;
+      }
+    }
+    .gogroup2{
+      width: 60%;
+      line-height: 110rpx;
+      background: @baseColor;
+      color: #fff;
+      border-top: 2rpx solid @baseColor;
+      button{
+        line-height: 110rpx;
+      }
+    }
+    .gogroup3{
+      width: 48%!important;
+    }
+    .group-again{
+      width: 90%;
+      height: 90rpx;
+      margin: 10rpx auto;
+      border-radius: 10rpx;
+      line-height: 90rpx;
+      text-align: center;
+      button{
+        line-height: 90rpx;
+      }
+      // margin: 10rpx 0;
+    }
+    
+    .group-over{
+      width: 90%;
+      line-height: 90rpx;
+      height: 90rpx;
+      margin: 10rpx auto;
+      text-align: center;
+      border-radius: 10rpx;
+      background: #ccc;
+      button{
+        line-height: 90rpx;
+      }
+    }
+  }
+  .btns1{
+    height: 90rpx;
+  }
+  
+  .now-detail{
+    width: 100%;
+    padding-top: 42rpx;
+    padding-bottom: 32rpx;
+    margin-bottom: 24rpx;
+    background: #f6f6f6;
+    .state{
+      font-size: 30rpx;
+      text-align: center;
+    }
+    .state1{
+      font-size: 26rpx;
+      text-align: center;
+      line-height: 90rpx;
+    }
+    .red{
+      color: #ff3c00;
+    }
+    .group-avtor{
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      padding: 0 50rpx;
+      .item{
+        padding: 0 25rpx 24rpx 25rpx;
+        position: relative;
+        
+        .avtor{
+          width:132rpx;
+          height: 132rpx;
+          border-radius: 50%;
+          border: 2rpx solid @baseColor;
+          overflow: hidden;
+          font-size: 100rpx;
+          color: #c9c9c9;
+          text-align: center;
+          image{
+            width: 132rpx;
+            height: 132rpx;
+          }
+        }
+        .avtor-name{
+          padding-top: 24rpx;
+          font-size: 26rpx;
+          height: 26rpx;
+          color: #b1b0b0;
+          text-align: center;
+        }
+        .avtor-leader{
+          position: absolute;
+          left: 50%;
+          bottom: 72rpx;
+          margin-left: -50rpx;
+          width: 100rpx;
+          color: #fff;
+          font-size: 26rpx;
+          text-align: center;
+          background: @baseColor;
+          border-radius: 30rpx;
+        }
+        .avtor1{
+          border: 1px dashed #c9c9c9;
+        }
+      }
+    }
+    .look-order{
+      text-align: center;
+      line-height: 50rpx;
+      font-size: 26rpx;
+      color: #b1b0b0;
+      background:transparent;
+    }
+    .timebg{
+      background: #333134;
+      display: inline-block;
+      margin: 0 10rpx;
+      padding: 0 6rpx;
+      width:38rpx;
+      border-radius: 10rpx;
+      color: #fff;
+    }
+  }
+  .order-arrow{
+      width: 7px;
+      height: 7px;
+      border-top: 1px solid #1e1e1e;
+      border-right: 1px solid #1e1e1e;
+      transform: rotate(45deg);
+      margin-left: 28rpx;
+    }
+</style>
+<template>
+  <view class="container" wx:if="{{ajaxOver}}">
+   <!--  <image src="../image/democode.png" @tap="see" /> -->
+    <view class="top-banner">
+      <image src="{{activity.project_top_image}}" mode="widthFix" />
+    </view>
+    <view class="activity-title activity-title1">{{activity.project_title}}</view>
+    <view class="info info1">
+        <view class="buy flex">
+            <view class="des">
+              <view class="time">{{activity.project_time}}</view>
+                <!-- 单独购买价格展示 -->
+                <view class="price flex"  wx:if="{{activity.project_type==1}}">
+                  <view class="now-price">¥{{activity.project_price}}</view>
+                </view>
+                <!-- 仅团购价格展示 -->
+                <view class="price flex"  wx:if="{{activity.project_type==2}}">
+                  <view class="now-price">¥{{activity.project_group_price}}</view>
+                  <view class="old-price flex">
+                    <text class="old" style="opacity:0">¥{{activity.project_price}}</text>
+                    <text>{{activity.project_group_num}}人团</text>
+                  </view>
+                </view>
+                <!-- 单独购买和团购价格展示 -->
+                <view class="price flex"  wx:if="{{activity.project_type==3}}">
+                  <view class="now-price">¥{{activity.project_group_price}}</view>
+                  <view class="old-price flex">
+                    <text class="old">¥{{activity.project_price}}</text>
+                    <text>{{activity.project_group_num}}人团</text>
+                  </view>
+                </view>
+            </view>
+            <view class="btn">
+              <button style="opacity:0">购买</button>
+              <view>{{activity.signup_num}}人已购买</view>
+            </view>
+        </view>
+      </view>
+    <!-- 拼团详情 提示语 -->
+    <view class="now-detail" wx:if="{{userLen > 0}}">
+      <!-- 拼团成功提示语  已购买 && 参团人满-->
+      <view class="success" wx:if="{{ActivityStatus == 1 && activity.project_group_num == activity.project_group_user.length}}">
+        <view class="state"><text class="red">拼团成功，</text>请加入活动微信群</view>
+        <view class="state1"><text class="red">{{activity.project_group_num}}人</text>完成参团</view>
+      </view>
+      <!-- 拼团失败提示语  已购买 && 参团人不满 && 购买时间超过24小时-->
+      <view class="fail" wx:if="{{ ActivityStatus == 2 }}">
+        <view class="state">已退款 拼团失败</view>
+        <view class="state1">还差<text class="red">{{activity.project_group_num - activity.project_group_user.length}}人</text>参团</view>
+      </view>
+      <!-- 拼团倒计时提示语 已购买 && 参团人不满 -->
+      <view class="countdown" wx:if="{{ActivityStatus !=2 && activity.project_group_countdown > 0 && activity.project_group_user.length>0 && activity.project_group_num > activity.project_group_user.length}}">
+        <view class="state">距拼团结束<text class="timebg">{{hours}}</text>:<text class="timebg">{{mins}}</text>:<text class="timebg">{{secs}}</text>
+        </view>
+        <view class="state1">还差<text class="red">{{activity.project_group_num - activity.project_group_user.length}}人</text>参团</view>
+      </view>
+      <view class="group-avtor flex">
+        <repeat for="{{activity.project_group_user}}" key="index" index="index" item="item"> 
+          <view class="item">
+              <view class="avtor"><image src="{{item.avatar_url}}" /></view>
+              <view class="avtor-name">{{item.nickname}}</view>
+              <view class="avtor-leader" wx:if="{{index == 0}}">团长</view>
+          </view>
+        </repeat>
+        <repeat for="{{activity.project_group_num-activity.project_group_user.length}}" key="index" index="index" item="item"> 
+          <view class="item">
+              <view class="avtor avtor1">?</view>
+              <view class="avtor-name"></view>
+          </view>
+        </repeat>
+      </view>
+      <!-- <form @submit="goOrderDetail" report-submit="true" wx:if="{{selfInUsers && selfStatus == 1}}">
+        <button class="look-order" formType="submit">查看订单 > </button>
+      </form> -->
+    </view>
+    <image src="{{activity.project_content_image}}" mode="widthFix" />
+    <view wx:if="{{!ActicityUser}}">
+      <view class="btns flex" wx:if="{{activity.project_type == 3  }}">
+        <view class="btn redirect">
+          <button open-type="getUserInfo" @getuserinfo="lookPay(1,'{{activity.project_price}}')" class="flex">
+            <view>¥{{activity.project_price}}</view>
+            <text>单独购买</text>
+          </button>
+        </view>
+        <view class="btn gogroup flex">
+          <button open-type="getUserInfo" @getuserinfo="lookPay(2,'{{activity.project_group_price}}')" class="flex">
+            <view>¥{{activity.project_group_price}}</view>
+            <text>发起拼团</text>
+          </button>
+        </view>
+      </view>
+      <view class="btns flex"  wx:elif="{{activity.project_type == 2 }}">
+        <view class="btn redirect redirect2 flex">
+          <text>¥{{activity.project_group_price}}</text>
+        </view>
+        <view class="btn gogroup gogroup2 flex">
+          <button open-type="getUserInfo" @getuserinfo="lookPay(2,'{{activity.project_group_price}}')">发起拼团</button>
+        </view>
+      </view>
+      <view class="btns flex" wx:else="{{activity.project_type == 1 }}">
+        <view class="btn redirect redirect2 flex">
+          <text>¥{{activity.project_price}}</text>
+        </view>
+        <view class="btn gogroup gogroup2 flex">
+          <button open-type="getUserInfo" @getuserinfo="lookPay(1,'{{activity.project_price}}')">立即报名</button>
+        </view>
+      </view>
+    </view>
+    <view wx:else="{{ActicityUser}}">
+      <!-- order_type  1 直接购买  2 团购 -->
+      <!-- 单独购买, 显示价格 -->
+      <view class="btns {{!activity.order_id?'':'btns1'}} flex" wx:if="{{activity.project_type == 1 || (activity.project_type == 3 && activity.order_type == 1) }}">
+        <!-- 未下单 -->
+        <block wx:if="{{!activity.order_id}}">
+          <view class="btn redirect redirect2 flex">
+            <text>¥{{activity.project_price}}</text>
+          </view>
+          <view class="btn gogroup gogroup2 flex">
+            <button open-type="getUserInfo" @getuserinfo="lookPay(1,'{{activity.project_price}}')">立即报名</button>
+          </view>
+        </block>
+        <!-- 下单已付款 -->
+        <block wx:if="{{activity.order_id && activity.order_status == 1}}">
+          <view class="btn redirect redirect1 flex">
+            <form @submit="goOrderDetail" report-submit="true">
+              <button  formType="submit">查看订单 </button>
+            </form>
+          </view>
+          <view class="btn gogroup gogroup1 flex">
+            <form @submit="showGroupCode" report-submit="true">
+              <button  formType="submit">加入活动微信群 </button>
+            </form>
+          </view>
+        </block>
+        <!-- 只下单 未付款 -->
+        <view wx:elif="{{activity.order_id && activity.order_status == 0}}">
+          <!-- 继续支付 -->
+          <view class="btns flex" wx:if="{{remainTime > 0}}">
+              <view class="btn redirect redirect2 redirect3 flex">
+                <text>您已成功抢占名额</text>
+              </view>
+              <view class="btn gogroup gogroup2 gogroup3 ">
+                <button open-type="getUserInfo"  @getuserinfo="lookPay('{{activity.order_type}}','{{activity.order_type == 1? activity.project_price : activity.project_group_price}}')">去支付( <text>{{selfHours}}:{{selfMins}}:{{selfSecs}} </text>)</button>
+              </view>
+          </view>
+          <!-- 超时 重新下单 -->
+          <view class="btns flex" wx:if="{{remainTime <= 0}}">
+            <view class="btns flex" wx:if="{{activity.project_type == 3 }}">
+              <view class="btn redirect">
+                <button open-type="getUserInfo" @getuserinfo="lookPay(1,'{{activity.project_price}}')" class="flex">
+                  <view>¥{{activity.project_price}}</view>
+                  <text>单独购买</text>
+                </button>
+              </view>
+              <view class="btn gogroup flex">
+                <button open-type="getUserInfo" @getuserinfo="lookPay(2,'{{activity.project_group_price}}')" class="flex">
+                  <view>¥{{activity.project_group_price}}</view>
+                  <text>发起拼团</text>
+                </button>
+              </view>
+            </view>
+            <view class="btns flex" wx:if="{{activity.project_type == 1}}">
+              <view class="btn redirect redirect2 flex">
+                <text>¥{{activity.project_price}}</text>
+              </view>
+              <view class="btn gogroup gogroup2 ">
+                <button open-type="getUserInfo" @getuserinfo="lookPay(1,'{{activity.project_group_price}}')">立即报名</button>
+              </view>
+            </view>
+     
+          </view>
+        </view>
+      </view>
+      <!-- 团购 和 团购/直接购买 -->
+      <view class="ft" wx:if="{{activity.project_type == 2  || (activity.project_type == 3&&(activity.order_type == 2||activity.order_type == null)) }}">
+        <!-- 下单并且已购买 -->
+        <view wx:if="{{selfInUsers && selfStatus == 1}}">
+          <!-- 满团 -->
+          <view class="btns btns1 flex"  wx:if="{{activity.project_group_num == activity.project_group_user.length }}">
+            <view class="btn redirect redirect1 flex">
+              <form @submit="goOrderDetail" report-submit="true">
+                <button  formType="submit">查看订单 </button>
+              </form>
+            </view>
+            <view class="btn gogroup gogroup1 flex">
+              <form @submit="showGroupCode" report-submit="true">
+                <button  formType="submit">加入活动微信群</button>
+              </form>
+            </view>
+          </view>
+          
+          <!-- 团未满 -->
+          <view wx:elif="{{activity.project_group_num > activity.project_group_user.length}}">
+            <!-- 倒计时 -->
+            <!-- <view class="btns  flex" wx:if="{{ActivityStatus == 0 && countDown > 0}}"> -->
+            <view class="btns  flex" wx:if="{{ActivityStatus == 0 }}">
+                <view class="btn redirect group-again">
+                  <form @submit="showFriend" report-submit="true">
+                    <button  formType="submit">邀请好友</button>
+                  </form>
+                </view>
+            </view>
+            <!-- 已超时 -->
+            <!-- <view  wx:if="{{countDown <= 0 && ActivityStatus == 2 }}"> -->
+            <view  wx:if="{{ActivityStatus == 2 }}">
+              <view class="btns flex" wx:if="{{activity.project_type == 3 }}">
+                <view class="btn redirect">
+                  <button open-type="getUserInfo" @getuserinfo="lookPay(1,'{{activity.project_price}}')" class="flex">
+                    <view>¥{{activity.project_price}}</view>
+                    <text>单独购买</text>
+                  </button>
+                </view>
+                <view class="btn gogroup flex">
+                  <button open-type="getUserInfo" @getuserinfo="lookPay(2,'{{activity.project_group_price}}')" class="flex">
+                    <view>¥{{activity.project_group_price}}</view>
+                    <text>发起拼团</text>
+                  </button>
+                </view>
+              </view>
+              <view class="btns flex" wx:if="{{activity.project_type == 2}}">
+                <view class="btn redirect redirect2 flex">
+                  <text>¥{{activity.project_group_price}}</text>
+                </view>
+                <view class="btn gogroup gogroup2 ">
+                  <button open-type="getUserInfo" @getuserinfo="lookPay(2,'{{activity.project_group_price}}')">发起拼团</button>
+                </view>
+              </view>
+            </view>
+          </view>
+       </view>
+        
+        <!-- 只下单 未购买 -->
+        <view wx:elif="{{selfInUsers && selfStatus == 0}}">
+          <!-- 继续支付 -->
+          <view class="btns flex" wx:if="{{activity.remain_time >= 0 && activity.project_group_countdown>0}}">
+              <view class="btn redirect redirect2 redirect3 flex">
+                <text>您已成功抢占名额</text>
+              </view>
+              <view class="btn gogroup gogroup2 gogroup3 ">
+                <button open-type="getUserInfo"  @getuserinfo="lookPay('{{activity.order_type}}','{{activity.order_type == 1? activity.project_price : activity.project_group_price}}')">去支付( <text>{{selfHours}}:{{selfMins}}:{{selfSecs}} </text>)</button>
+              </view>
+          </view>
+          <!-- 超时 重新下单 -->
+          <view class="btns flex" wx:else="{{activity.remain_time <= 0}}">
+            <view class="btns flex" wx:if="{{activity.project_type == 3 }}">
+              <view class="btn redirect">
+                <button open-type="getUserInfo" @getuserinfo="lookPay(1,'{{activity.project_price}}')" class="flex">
+                  <view>¥{{activity.project_price}}</view>
+                  <text>单独购买</text>
+                </button>
+              </view>
+              <view class="btn gogroup flex">
+                <button open-type="getUserInfo" @getuserinfo="lookPay(2,'{{activity.project_group_price}}')" class="flex">
+                  <view>¥{{activity.project_group_price}}</view>
+                  <text>发起拼团</text>
+                </button>
+              </view>
+            </view>
+            <view class="btns flex" wx:if="{{activity.project_type == 2}}">
+              <view class="btn redirect redirect2 flex">
+                <text>¥{{activity.project_group_price}}</text>
+              </view>
+              <view class="btn gogroup gogroup2 ">
+                <button open-type="getUserInfo" @getuserinfo="lookPay(2,'{{activity.project_group_price}}')">发起拼团</button>
+              </view>
+            </view>
+     
+          </view>
+        </view>
+        <!-- 未下单-->
+        <view wx:if="{{selfInUsers == false}}">
+            <view class="btns flex" wx:if="{{activity.project_type == 3 }}">
+              <view class="btn redirect">
+                <button open-type="getUserInfo" @getuserinfo="lookPay(1,'{{activity.project_price}}')" class="flex">
+                  <view>¥{{activity.project_price}}</view>
+                  <text>单独购买</text>
+                </button>
+              </view>
+              <view class="btn gogroup flex">
+                <button open-type="getUserInfo" @getuserinfo="lookPay(2,'{{activity.project_group_price}}')" class="flex">
+                  <view>¥{{activity.project_group_price}}</view>
+                  <text>{{activity.project_group_user.length>0&&activity.project_group_num > activity.project_group_user.length?'参加拼团':'发起拼团'}}</text>
+                </button>
+              </view>
+            </view>
+            <view class="btns flex" wx:if="{{activity.project_type == 2}}">
+              <view class="btn redirect redirect2 flex">
+                <text>¥{{activity.project_group_price}}</text>
+              </view>
+              <view class="btn gogroup gogroup2 ">
+                <button open-type="getUserInfo" @getuserinfo="lookPay(2,'{{activity.project_group_price}}')">{{activity.project_group_user.length>0&&activity.project_group_num > activity.project_group_user.length?'参加拼团':'发起拼团'}}</button>
+              </view>
+            </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 活动已结束按钮 -->
+    <view class="btns  flex" wx:if="{{activity.project_signup_end_time*1000 < nowTime}}">
+      <view class="btn redirect group-over">
+        <text>活动已结束</text>
+      </view>
+    </view>
+    <!-- 支付 -->
+    <view class="paypop {{showPay ?'fadein':''}} {{hidePay ?'fadeout':''}}" >
+      <view class="paypop-wrap">
+          <view class="close" ><image src="../image/close.png" @tap="closePay" /></view>
+          <view class="price">¥{{buyPrice}}</view>
+          <view class="info">
+            <view>活动名称：{{activity.project_title}}</view>
+            <view class="nobdb">上课时间：{{activity.project_time}}</view>
+          </view>
+          <button @tap="pay">微信支付</button>
+      </view>
+    </view>
+    <!-- 加群提醒 -->
+    <view class="paypop {{show ?'fadein':''}} {{hide ?'fadeout':''}}">
+      <view class="paypop-wrap paypop-wrap1">
+          <view class="close close1"><text>加群提醒</text><image src="../image/close.png" @tap="closeGroupCode" /></view>
+          <view class="info info1">请在加群页面：</view>
+          <view class="price price1 flex">
+            <text>{{activity.project_wx_reply_text}}</text>
+            <text class="codedes">获取活动微信群二维码</text>
+          </view>
+          <button open-type="contact" >知道了,去加群</button>
+      </view>
+    </view>
+    <!-- 邀请好友 -->
+    <view class="zoom {{showFriend ?'fadein':''}} {{hideFriend?'fadeout':''}}" >
+      <view class="zoom-wrap">
+        <view class="zoom-btns flex">
+          <button open-type="share"><image src="../image/share-friend.png" />分享给好友</button>
+          <button @tap="goSharePic"><image src="../image/share-pic.png" />生成分享图片</button>
+        </view>
+        <view class="close" @tap="closeFriend"><image src="../image/circle-close.png" /></view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import wxRequest from '../util/request'
+  import {showGroupCode,closeGroupCode,showFriend,closeFriend} from '../util/public'
+  // import API from '../util/data'
+  
+  export default class GroupDetail extends wepy.page {
+    config = {
+      navigationBarTitleText: '活动详情',
+      // disableScroll: true
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+      isShowPay: false,// 支付弹窗
+      isShowGroupCode: false, // 去加群弹窗
+      hours:0,
+      mins:0,
+      secs:0,
+      selfHours:0,
+      selfMins:0,
+      selfSecs:0,
+      showFriend: false,
+      hideFriend: false,
+      showPay: false,
+      hidePay: false,
+      show: false,
+      hide: false,
+      activity:{},
+      token: wx.getStorageSync('token'),
+      ActicityUser: wx.getStorageSync('ActicityUser'),
+      buyPrice: 0,//购买价格
+      ajaxOver: false,
+      selfInUsers: false, // 当前用户是否在购买者数组里
+      ActivityStatus:null,
+      nowTime:0,
+      selfStatus:0, // 用户自身的状态 
+      timer:null,
+      timer1:null,
+      timer2: null,
+      userLen:0,
+      remainTime:0,
+      countDown:0
+    }
+
+    computed = {}
+
+    methods = {
+      /* see(){
+        let arr = ['http://caihong.ucong.net/democode.jpg']
+        wx.previewImage({
+          urls:arr,
+          current:'http://caihong.ucong.net/democode.jpg'
+        })
+      }, */
+      // 查看订单
+      goOrderDetail(){
+        console.log( this.activity)
+        this.$navigate('/pages/order-detail',{orderId: this.activity.order_id});
+      },
+      // 点击立即报名 显示支付弹窗
+      lookPay(buyType,price,res){
+        this.buy_type = buyType;
+        // console.log(res)
+        let that = this;
+        // this.token = wx.getStorageSync('token');
+        this.user = wx.getStorageSync('ActicityUser');
+        // 只有授权成功才能进行支付
+        if(res.detail.errMsg.indexOf('ok') != -1){
+         console.log(that.user)
+          if(!this.user){
+            wx.login({
+              success: re => {
+                if(re.code){
+                  let params = {
+                    method:'post',
+                    data:{
+                      code:re.code,
+                      type: 1,
+                      encrypted_data:res.detail.encryptedData,
+                      iv: res.detail.iv,
+                    }
+                  }
+                  // 登录
+                  wxRequest(params,'/login').then(r => {
+                    console.log(r)
+                      // 储存token
+                      wx.setStorageSync('token', r.data.data.token)
+  
+                      // 登录完成 跳转到登录之前的页面,并将携带用户信息
+                      this.$redirect('/pages/login',{
+                        from: '/'+this.$wxpage.route,
+                        encrypted_data:res.detail.encryptedData,
+                        iv:res.detail.iv,
+                        activityId:this.activityId ,
+                        groupInviterId:this.groupInviterId
+                      })
+                        
+                  })
+              }
+            }
+            })
+          }else{
+            this.buyPrice = price;
+            this.showPay = true;
+            this.hidePay = false;
+            this.$apply();
+          }
+          // this.buyPrice = price;
+          // this.showPay = true;
+          // this.hidePay = false;
+          // this.$apply();
+        }
+      },
+      // 关闭支付弹窗
+      closePay(){
+        this.showPay = false;
+        this.hidePay = true;
+      },
+
+      // 生成图片
+      goSharePic(){
+        console.log(this.activity)
+        let groupInviterId = this.activity.project_group_user.length > 0 ? this.activity.project_group_user[0].user_id:this.ActicityUser.user_id
+        this.$navigate('/pages/share-pic',{project_id:this.activity.id,group_inviter_id:groupInviterId});
+      },
+      
+      // 邀请好友
+      showFriend(){
+        showFriend(this)
+      },
+      // 关闭好友弹窗
+      closeFriend(){
+        closeFriend(this)
+      },
+      // 点击加微信群 
+      showGroupCode(){
+        showGroupCode(this);
+      },
+      // 关闭加群弹窗
+      closeGroupCode(){
+        closeGroupCode(this);
+      },
+      
+      // 微信支付成功
+      pay(){
+        let that = this;
+        let users = this.activity.project_group_user;
+        let params = {
+          method:'post',
+          data:{
+            // price:this.buyPrice,
+            project_id:this.activityId,
+            buy_type:this.buy_type,
+            //group_inviter_id: (userLength > 0 && userLength < this.activity.project_group_num )? this.activity.project_group_user[0].user_id:this.ActicityUser.user_id
+            group_inviter_id: (users.length > 0 && users.length < this.activity.project_group_num) ? users[0].user_id:this.ActicityUser.user_id
+          }
+        }
+        // this.activity = {};
+        wxRequest(params,'/order/create').then(res=>{
+          console.log(res)
+          if(res.data.code == 1){
+            // console.log(111)
+            // 支付成功, 且价格为0, 跳转到支付成功
+            if(that.buyPrice == '0.00'){
+              that.$parent.globalData.isBuy = true
+              // 单独购买 和 成团单独购买
+              if(that.activity.project_type == 1 || (that.activity.project_type == 3 && that.buy_type == 1) ){
+                that.activity.order_status = 1;
+                that.$apply();
+                that.$navigate('/pages/pay-success',{activityInfo:JSON.stringify(that.activity)});
+              }else{
+                let flag = false;
+                for(let i = 0; i < that.activity.project_group_user.length; i++){
+                  let user = that.activity.project_group_user[i];
+                  if(user.user_id == that.ActicityUser.user_id){
+                    flag = true;
+                    break;
+                  }
+                }
+                if(!flag){
+                  that.activity.project_group_user.push({
+                      avatar_url: that.ActicityUser.avatar_url,
+                      nickname:that.ActicityUser.nick_name,
+                      order_status:1,
+                      user_id:that.ActicityUser.user_id
+                    })
+                }
+                that.activity.order_status = 1;
+                that.$apply();
+                that.$navigate('/pages/launch-group',{activityInfo:JSON.stringify(that.activity),projectGroupNum:that.activity.project_group_num});
+              }
+              that.showPay = false;
+              that.hidePay = true;
+            }else{
+              // console.log(2222)
+              var payModel = res.data.data.order;
+              console.log(payModel)
+              wx.requestPayment({
+                'timeStamp': payModel.timeStamp,
+                'nonceStr': payModel.nonceStr,
+                'package': payModel.package,
+                'signType':  payModel.signType,
+                'paySign': payModel.paySign,
+                'success': function (r) {
+                  console.log(r)
+                  that.$parent.globalData.isBuy = true
+                  wx.showToast({
+                    title: '支付成功',
+                    icon: 'success',
+                    duration: 2000,
+                    mask: true,
+                    success: re =>{
+                      // console.log('支付成功')
+                      // console.log(re)
+                      //支付成功转到拼团成功页
+                      //this.$navigate('/pages/pay-success');
+                      if(that.activity.project_type == 1 || (that.activity.project_type == 3 && that.buy_type == 1) ){
+                        that.activity.order_status = 1;
+                        that.$apply();
+                        that.$navigate('/pages/pay-success',{activityInfo:JSON.stringify(that.activity)});
+                      }else{
+                          let flag = false;
+                          for(let i = 0; i < that.activity.project_group_user.length; i++){
+                            let user = that.activity.project_group_user[i];
+                            if(user.user_id == that.ActicityUser.user_id){
+                              flag = true;
+                              break;
+                            }
+                          }
+                          if(!flag){
+                            that.activity.project_group_user.push({
+                                avatar_url: that.ActicityUser.avatar_url,
+                                nickname:that.ActicityUser.nick_name,
+                                order_status:1,
+                                user_id:that.ActicityUser.user_id
+                              })
+                          }
+                        //支付成功 order_status 为 1 
+                        that.activity.order_status = 1;
+                        that.$apply();
+                        that.$navigate('/pages/launch-group',{activityInfo:JSON.stringify(that.activity),projectGroupNum:that.activity.project_group_num});
+                      }
+                    }
+                  })
+                },
+                'fail': function (fail) {
+                  that.show = false;
+                  that.hide = false;
+                  that.showPay = false;
+                  that.hidePay = false;
+                  that.showFriend = false;
+                  that.hideFriend = false;
+                  that.hours = 0;
+                  that.mins = 0;
+                  that.secs = 0;
+                  that.selfHours = 0;
+                  that.selfMins = 0;
+                  that.selfSecs = 0;
+                  that.selfInUsers = true;
+                  that.selfStatus = 0;
+                  that.getActivity();
+                  that.$apply();
+                 /*  console.log(fail)
+                  // 取消订单 隐藏按钮
+                  that.hidePay = true;
+                  that.showPay = false;
+                  // that.$apply();
+                  that.selfInUsers = true;
+                  that.selfStatus = 0;
+                  
+                  clearInterval(that.timer2)
+                  let nowCountDown = 60*10;
+                  
+                  // that.timer2 = setInterval(()=>{
+                  //   let hours = Number(that.Countdown(nowCountDown).hour) + that.Countdown(nowCountDown).day*24;
+                  //   that.selfHours = hours < 10? '0'+hours : hours;
+                  //   that.selfMins = that.Countdown(nowCountDown).min;
+                  //   that.selfSecs = that.Countdown(nowCountDown).sec;
+                  //   nowCountDown--;
+                  //   that.$apply();
+                  // },1000)
+                  console.log(that)
+                  that.$apply();
+                  console.log(that.selfStatus,that.selfInUsers) */
+                }
+              })
+            }
+          }
+        })
+      }
+    }
+
+    events = {
+     
+    }
+    watch = {
+      // selfInUsers (newValue, oldValue) {
+      //   console.log(newValue,  oldValue)
+      //     this.$apply();
+      // },
+   
+      // selfStatus (newValue, oldValue) {
+      //   console.log(newValue,  oldValue)
+      //     this.$apply();
+      // },
+    }
+    // 倒计时
+    Countdown(countdown){
+      // let future = new Date(futureTime).getTime();
+      // let now = new Date().getTime();
+      let diff = countdown;
+      if(diff < 0) return{
+        day: '00',
+        hour: '00',
+        min: '00',
+        sec: '00'
+      }
+      //获取时间差的天
+      let day = getTwo(parseInt(diff/(24*60*60))) == '00'? '00' : getTwo(parseInt(diff/(24*60*60)));
+      //获取时间差的时
+      let hour = getTwo(parseInt(diff/(60*60)%24)) == '00'? '00': getTwo(parseInt(diff/(60*60)%24));
+      //获取时间差的分
+      let min = getTwo(parseInt(diff/60%60)) == '00'? '00': getTwo(parseInt(diff/60%60));
+      //获取时间差的秒
+      let sec = getTwo(parseInt(diff % 60)) == '00'? '00': getTwo(parseInt(diff % 60));
+      //处理个位数
+      function getTwo(num){
+        return num < 10? '0' + num : num
+      }
+      return {
+        day: day,
+        hour: hour,
+        min: min,
+        sec: sec
+      }
+    }
+    // 获取活动详情数据
+    getActivity(){
+      this.selfInUsers = false;
+      let params = {
+        method:'post',
+        data:{id: this.activityId, group_inviter_id: this.groupInviterId}
+      }
+      wxRequest(params,'/project/item').then(res => {
+        console.log('测试昵称')
+        console.log(res)
+        this.activity = res.data.data;
+        // res.data.data.project_group_user.pop()
+        let users = res.data.data.project_group_user;
+        let selfId = this.ActicityUser.user_id;
+        this.userLen = users.length;
+        // 倒计时为负值 且 团不满 退款状态
+        if(this.activity.project_group_countdown<=0 && this.activity.project_group_num > this.activity.project_group_user.length){
+          this.ActivityStatus = 2;
+        }
+        // 倒计时
+        if(this.activity.project_group_countdown>0 && this.activity.project_group_num > this.activity.project_group_user.length){
+          this.ActivityStatus = 0;
+        }
+        // 团满 成功状态
+        if(this.activity.project_group_num == this.activity.project_group_user.length){
+          this.ActivityStatus = 1;
+        }
+
+        // console.log('ActivityStatus-ajax:'+this.ActivityStatus)
+
+        if(users.length > 0){
+          for(let i = 0; i < users.length; i++){
+            if(selfId == users[i].user_id){
+              if(users[i].order_status == 0){
+                  this.userLen--;
+              }
+              
+              // 用户在团购数组中
+              this.selfInUsers = true;
+              // 用户的状态  是否付款
+              this.selfStatus = users[i].order_status;
+              break;
+            }
+          }
+        }else{
+          this.selfInUsers = false;
+        }
+        
+       
+        if(this.activity.project_group_countdown > 0 && this.activity.project_group_num > this.activity.project_group_user.length ){
+          this.countDown = this.activity.project_group_countdown;
+          // this.countDown = 10;
+          clearInterval(this.timer)
+          this.timer = setInterval(()=>{
+            let countdown = this.activity.project_group_countdown;
+            if(countdown <= 0){
+              clearInterval(this.timer)
+              this.ActivityStatus = 2;
+              // this.$apply();
+            }else{
+              let hours = Number(this.Countdown(countdown).hour) + this.Countdown(countdown).day*24;
+              this.hours = hours < 10? '0'+hours : hours;
+              this.mins = this.Countdown(countdown).min;
+              this.secs = this.Countdown(countdown).sec;
+              this.activity.project_group_countdown--;
+              this.countDown--;
+            }
+            this.$apply();
+          },1000)
+        }
+
+        // 本人下单未付款的倒计时
+        if(this.activity.remain_time > 0){
+          this.remainTime = this.activity.remain_time
+          this.selfHours = 0;
+          this.selfMins = 0;
+          this.selfSecs = 0;
+           clearInterval(this.timer1)
+          this.timer1 = setInterval(()=>{
+      
+            if(this.activity.remain_time < 0){
+              // 删除自己
+              var len = this.activity.project_group_user.length;
+              for(let i = 0; i < len; i++){
+                let user = this.activity.project_group_user[i];
+                if(user.user_id == this.ActicityUser.user_id){
+                  this.activity.project_group_user.splice(i,1)
+                }
+              }
+              this.userLen = this.activity.project_group_user.length;
+              this.selfInUsers = false;
+              // this.$apply();
+              clearInterval(this.timer)
+              clearInterval(this.timer1)
+            }else{
+              let hours = Number(this.Countdown(this.activity.remain_time).hour) + this.Countdown(this.activity.remain_time).day*24;
+              this.selfHours = hours < 10? '0'+hours : hours;
+              this.selfMins = this.Countdown(this.activity.remain_time).min;
+              this.selfSecs = this.Countdown(this.activity.remain_time).sec;
+              this.activity.remain_time--;
+              this.remainTime--;
+              // this.$apply();
+            }
+            this.$apply();
+          },1000)
+        }
+        this.ajaxOver =  true;
+        this.$apply();
+      })
+    }
+    tt(countdown,hours,mins,secs,timer){
+      // console.log(countdown)
+      if(countdown < 0){
+        this.ActivityStatus = 2;
+        clearInterval(timer)
+      }else{
+        let hours = Number(this.Countdown(countdown).hour) + this.Countdown(countdown).day*24;
+        hours = hours < 10? '0'+hours : hours;
+        mins = this.Countdown(countdown).min;
+        secs = this.Countdown(countdown).sec;
+      }
+    }
+    //分享给好友
+    onShareAppMessage(){
+      console.log('share')
+      let users = this.activity.project_group_user
+      var that = this;
+      let groupInviterId = (users.length > 0 && users.length < this.activity.project_group_num) ? users[0].user_id:this.ActicityUser.user_id
+      let groupTitle = this.activity.project_title;
+      let groupId = this.activity.id;
+      return {
+        title: groupTitle,
+        path: '/pages/group-detail?groupInviterId='+groupInviterId+'&activityId='+groupId,  // 传递邀请者Id
+        imageUrl:this.activity.project_top_image,
+        success: function(res){
+          // console.log(that.activity)
+          that.showFriend = false;
+          that.hideFriend = true;
+          that.$apply();
+        },
+        fail: function(){
+          // console.log(333333)
+        }
+      }
+    }
+    onLoad(params) {
+
+      this.showPay = false;
+      this.hidePay = false;
+      this.show = false;
+      this.hide = false;
+      this.showFriend = false;
+      this.hideFriend = false;
+      this.hours = 0;
+      this.mins = 0;
+      this.secs = 0;
+      this.selfHours = 0;
+      this.selfMins = 0;
+      this.selfSecs = 0;
+
+      console.log(this.show)
+
+      this.ActicityUser = wx.getStorageSync('ActicityUser');
+      
+      console.log(1111111111)
+      console.log(params)
+      if(params.scene){ // 通过分享图片进入页面
+        params = decodeURIComponent(params.scene)
+        console.log(22222,params)
+        let paramArr = params.split(',')
+        console.log(3333333,paramArr)
+        
+        if(!paramArr[0] || !paramArr[1]){
+          this.$switch('/pages/index')
+        }else{
+          this.activityId = paramArr[0];
+          this.groupInviterId = paramArr[1];
+        }
+      }else{ //小程序内跳转进入
+
+         this.activityId = params.activityId;
+         this.groupInviterId = params.groupInviterId == undefined ? 0 : params.groupInviterId;
+         this.ActivityStatus = params.activityStatus;
+         console.log('ActivityStatus-load:'+this.ActivityStatus)
+      }
+      this.activity = {};
+     
+      
+      // console.log(this.ActivityStatus)
+      this.nowTime = new Date().getTime();
+      this.$apply();
+      
+      
+      
+    }
+    onShow(){
+      this.ActicityUser = wx.getStorageSync('ActicityUser');
+      this.getActivity();
+      // console.log(this.ActivityStatus)
+    }
+    onHide(){
+      console.log('hide')
+      this.show = false;
+      this.hide = false;
+      this.showPay = false;
+      this.hidePay = false;
+      this.showFriend = false;
+      this.hideFriend = false;
+      this.hours = 0;
+      this.mins = 0;
+      this.secs = 0;
+      this.selfHours = 0;
+      this.selfMins = 0;
+      this.selfSecs = 0;
+      clearInterval(this.timer)
+      clearInterval(this.timer1)
+      // clearInterval(that.timer2)
+    }
+    onUnload(){
+      console.log('onUnload')
+      this.show = false;
+      this.hide = false;
+      this.showPay = false;
+      this.hidePay = false;
+      this.showFriend = false;
+      this.hideFriend = false;
+      this.hours = 0;
+      this.mins = 0;
+      this.secs = 0;
+      this.selfHours = 0;
+      this.selfMins = 0;
+      this.selfSecs = 0;
+      clearInterval(this.timer)
+      clearInterval(this.timer1)
+      // clearInterval(that.timer2)
+      // console.log('2232323')
+    }
+  }
+</script>

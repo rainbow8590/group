@@ -1,0 +1,194 @@
+<style lang="less">
+  @import '../util/public.less';
+  image{
+    width: 568rpx;
+    height: 400rpx;
+    margin-top: 150rpx;
+    margin-bottom: 90rpx;
+  }
+  button{
+    width: 690rpx;
+    height: 90rpx;
+    line-height: 90rpx;
+    background: @baseColor;
+    color: #fff;
+    border-radius: 10rpx;
+    font-size: 34rpx;
+  }
+  .asphone{
+    margin-top: 30rpx;
+    font-size: 26rpx;
+    color: #191919;
+  }
+  .button-hover{
+    background: @baseColor;
+    color: #fff;
+  }
+</style>
+<template>
+  <view class="container">
+    <image src="../image/login.png" />
+    <button open-type="getPhoneNumber" @getphonenumber="getPhone" >微信用户快速登录</button>
+    <!-- <view class="asphone" @tap="loginAsPhone">手机号码登录/注册</view> -->
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import 'wepy-async-function'
+  import wxRequest from '../util/request'
+  
+  export default class Login extends wepy.page {
+    config = {
+      navigationBarTitleText: '登录',
+      // disableScroll: true
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+      
+    }
+
+    computed = {
+      
+    }
+
+    methods = {
+      getPhone(res){
+        console.log(res)
+        let that = this;
+        // 授权
+        if(res.detail.errMsg.indexOf('ok') != -1){
+          wx.checkSession({
+            success: function(){
+             // 传phonenumber
+          
+                  let params = {
+                    method:'post',
+                    data:{
+                      type: 2,
+                      encrypted_data:res.detail.encryptedData,
+                      iv: res.detail.iv,
+                    }
+                  }
+                  // 登录
+                  wxRequest(params,'/login').then(r => {
+                    console.log('测试昵称')
+                    console.log(r.data.data.user)
+                      that.$parent.globalData.already = 1;
+                      // 储存user信息
+                      wx.setStorageSync('ActicityUser', r.data.data.user)
+                      // console.log(that.from)
+                      if(that.from == '/pages/order'){
+                        that.$switch(that.from)
+                      }else{
+                        that.$redirect(that.from,{activityId:that.activityId,groupInviterId:that.groupInviterId})
+                      }
+                      // 登录完成 跳转到登录之前的页面,并将携带用户信息
+                      // this.$navigate('/pages/login',{
+                      //   from: '/'+this.$wxpage.route,
+                      //   raw_data: res.detail.rawData,
+                      //   signature: res.detail.signature,
+                      //   encrypted_data:res.detail.encryptedData,
+                      //   iv:res.detail.iv,
+                      // })
+                        
+                  })
+            },
+            fail: function(){
+              // session失效就回订单页重新登录
+              this.$redirect(this.from)
+              // 重新获取code登陆
+              /* wx.login({
+                success: re => {
+                  if(re.code){
+                    //进行登陆
+                      let params = {
+                        method:'post',
+                        data:{
+                          code:re.code,
+                          type: 1,
+                          encrypted_data:this.encrypted_data,
+                          iv: this.iv,
+                        }
+                      }
+                      // 登录
+                      wxRequest(params,'/login').then(r => {
+                          // 储存token
+                          wx.setStorageSync('token', r.data.data.token)
+                          wx.setStorageSync('user', r.data.data.user)
+                          // 登录完成 跳转到登录之前的页面,并将携带用户信息
+                          this.$navigate('/pages/login',{
+                            from: '/'+this.$wxpage.route,
+                            raw_data: res.detail.rawData,
+                            signature: res.detail.signature,
+                            encrypted_data:res.detail.encryptedData,
+                            iv:res.detail.iv,
+                          })
+                            
+                      })
+                  }
+                }
+              }) */
+            }
+          })
+         
+          /* wx.login({
+            success:function(resw){
+              // console.log(resw)
+              if(resw.code){
+                let params = {
+                  method:'post',
+                  data:{
+                    code:resw.code,
+                    encrypted_data_4phone:res.detail.encryptedData, //phone
+                    iv_4phone: res.detail.iv, // phone
+                    encrypted_data:that.encrypted_data,
+                    iv: that.iv,
+                    raw_data: that.raw_data,
+                    signature: that.signature
+                  }
+                }
+                // 登录
+                wxRequest(params,'/login').then(r => {
+                      // 储存token
+                      wx.setStorageSync('token', r.data.data.token)
+                      wx.setStorageSync('user', r.data.data.user)
+                      // 登录完成 跳转到登录之前的页面,并将携带用户信息
+                      if(that.from == '/pages/order'){
+                        that.$switch(that.from)
+                      }else{
+                        that.$redirect(that.from,{activityId:that.activityId})
+                      }
+                })
+                 
+                
+              }
+            }
+          }) */
+        }
+        
+      },
+      loginAsPhone(){
+        this.$navigate('/pages/login-phone')
+      }
+    }
+
+    events = {
+    }
+    
+    onLoad(param) {
+      
+      this.from = param.from;
+      // this.raw_data = param.raw_data;
+      // this.signature = param.signature;
+      this.encrypted_data = param.encrypted_data;
+      this.iv = param.iv;
+      this.activityId = param.activityId;
+      this.groupInviterId = param.groupInviterId;
+    }
+  }
+</script>

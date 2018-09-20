@@ -1,0 +1,155 @@
+<style lang="less">
+  @import '../util/public.less';
+  .container{
+    padding: 0 32rpx;
+    font-size: 26rpx;
+    .order-detail{
+      width:100%;
+      border-bottom: 1px solid #e4e4e4;
+      line-height: 63rpx;
+      .detail-item{
+        margin-right: 20rpx;
+      }
+    }
+    .btns{
+      margin-top: 300rpx;
+      button{
+        width: 590rpx;
+        height: 85rpx;
+        border-radius: 40rpx;
+        
+        font-size: 34rpx;
+        padding: 0;
+        box-sizing: border-box;
+        &.look{
+          background: @baseColor;
+          color: #fff;
+          margin-bottom: 30rpx;
+          box-shadow: 0 8rpx 20rpx rgba(34,153,90,.5)
+        }
+        &.order{
+          border: 2rpx solid @baseColor;
+          background: #fff;
+          color: @baseColor;
+        }
+      }
+    }
+  }
+  
+ 
+</style>
+<template>
+  <view class="container">
+    <view class="order-detail flex">
+      <text class="detail-item">活动名称: </text>
+      <text>{{activityInfo.project_title}}</text>
+    </view>
+    <view class="order-detail flex">
+      <text class="detail-item">订单编号: </text>
+      <text>{{activityInfo.order_no}}</text>
+    </view>
+    <view class="order-detail flex">
+      <text class="detail-item">订单状态: </text>
+      <text>{{activityInfo.order_state}}</text>
+    </view>
+    <view class="order-detail flex">
+      <text class="detail-item">支付时间: </text>
+      <text>{{activityInfo.create_time}}</text>
+    </view>
+    <view class="order-detail flex">
+      <text class="detail-item">实付金额: </text>
+      <text>¥{{activityInfo.order_price}}</text>
+    </view>
+    <view class="order-detail flex">
+      <text class="detail-item">付费方式: </text>
+      <text>{{activityInfo.pay_type == 'wxpay'?'微信':activityInfo.pay_type}}</text>
+    </view>
+    <view class="btns">
+      <form @submit="goGroupDetail" report-submit="true">
+        <button class="look" formType="submit">查看活动</button>
+      </form>
+      <form @submit="goOrders" report-submit="true">
+        <button class="order" formType="submit">全部订单</button>
+      </form>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import wxRequest from '../util/request'
+  
+  export default class OrderDetail extends wepy.page {
+    config = {
+      navigationBarTitleText: '订单详情',
+      disableScroll: true
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+      activityInfo:{}
+    }
+
+    computed = {
+      
+    }
+
+    methods = {
+      // 查看活动
+      goGroupDetail(){
+        this.$navigate('/pages/group-detail',{activityId:this.activityInfo.project_id,activityStatus:this.activityInfo.order_status})
+      },
+      // 全部订单
+      goOrders(){
+        console.log(1)
+        this.$switch('/pages/order')
+      }
+    }
+
+    events = {
+     
+    }
+    
+    // 获取订单详情
+    getOrder(orderId){
+      wxRequest({method:'post',data:{id:orderId}},'/order/item').then(res => {
+        if(res.data.code == 1){
+          this.activityInfo = res.data.data;
+          if(this.activityInfo.order_type == 1){
+              if(this.activityInfo.order_status == 1){
+                this.activityInfo.order_state ='购买成功'
+              }else if(this.activityInfo.order_status == 0){
+                this.activityInfo.order_state ='未付款'
+              }else{
+                this.activityInfo.order_state ='已退款'
+              }
+            }else if(this.activityInfo.order_type == 2){
+              if(this.activityInfo.order_status == 1){
+                this.activityInfo.order_state ='团购成功'
+              }else if(this.activityInfo.order_status == 0){
+                this.activityInfo.order_state ='团购中'
+              }else{
+                this.activityInfo.order_state ='已退款'
+              }
+            }
+          this.$apply();
+        }else{
+          wx.showModal({
+            title: '提示',
+            content: res.data.msg,
+            showCancel: false
+          })
+        }
+      })
+    }
+
+    onLoad(params) {
+      let orderId = params.orderId;
+      console.log(orderId)
+      this.getOrder(orderId)
+    }
+  }
+</script>

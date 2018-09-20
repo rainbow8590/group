@@ -1,0 +1,270 @@
+<style lang="less">
+  @import '../util/public.less';
+  canvas{
+    width: 100%;
+    height: 1000rpx;
+    
+  }
+  button{
+    width: 590rpx;
+    height: 85rpx;
+    color: #fff;
+    font-size: 34rpx;
+    background: @baseColor;
+    border-radius: 50rpx;
+    box-shadow: 0 8rpx 20rpx rgba(34,153,90,.4)
+  }
+  
+</style>
+<template>
+  <view class="container">
+    <canvas canvas-id="myCanvas" style="height:{{FullWidth*520/375}}px;background: #fff;" />
+    <button @tap="saveCanvas">保存图片</button>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import wxRequest from '../util/request'
+  import downloadSaveFiles from '../util/downloadSaveFiles'
+  
+  export default class SharePic extends wepy.page {
+    config = {
+      navigationBarTitleText: '生成分享图片',
+      // disableScroll: true
+    }
+    components = {}
+
+    mixins = []
+    data = {
+      FullHeight: 0,
+      FullWidth:0
+    }
+
+    computed = {}
+
+    methods = {
+      // 保存绘图
+      saveCanvas(){
+        // 获取权限
+        wx.getSetting({
+          success(res){
+            let auths = res.authSetting;
+            
+            // 已经授权
+            if(auths['scope.writePhotosAlbum']){
+              auth();
+            }else if(auths['scope.writePhotosAlbum']== false){ // 拒绝授权
+              wx.openSetting({
+                success: (res) => {
+                }
+              })
+            }else{ // 第一次使用 还未进行授权操作
+              giveAuth()
+            }
+          }
+        })
+        function giveAuth(){
+          wx.authorize({
+              scope: 'scope.writePhotosAlbum',
+              success() {
+                // 同意
+                auth();
+              },
+              fail(err){
+                // 拒绝
+              }
+          })
+        }
+
+        function auth(){
+          wx.canvasToTempFilePath({
+            fileType:'jpg',
+            canvasId: 'myCanvas',
+            success: function(res) {
+              // 保存图片
+              wx.saveImageToPhotosAlbum({
+                  filePath:res.tempFilePath,
+                  success:function(resq) {
+                    wx.showToast({
+                      title: '保存成功',
+                      icon: 'success',
+                      duration: 1000
+                    })
+                  }
+              })
+            } 
+          })
+        }
+      }
+    }
+
+    events = {}
+    drawSharePic(topimg, title, price , code){
+      wx.showLoading({
+        title:'图片生成中...',
+        mask: true
+      })
+      
+      const ctx = wx.createCanvasContext('myCanvas')
+      // 画白色背景
+      ctx.rect(0, 0, this.FullWidth, this.FullWidth*520/375)
+      ctx.setFillStyle('#ffffff')
+      ctx.fill();
+
+      // 画banner
+      ctx.drawImage(topimg, 0, 0, this.FullWidth, this.FullWidth*200/375)
+
+      // 标题
+      ctx.setTextAlign('left')
+      ctx.setFillStyle('#313131')
+      ctx.setFontSize(this.FullWidth*15/375)
+      // let title = title;
+      ctx.fillText(title, (this.FullWidth - title.length*15)/2, this.FullWidth*230/375)
+
+      ctx.setFillStyle('#3dcc6f')
+      ctx.setFontSize(this.FullWidth*22/375)
+      let pricestr = price+'元拼团'
+      ctx.fillText(pricestr, (this.FullWidth - (pricestr.length-1)*22)/2,  this.FullWidth*260/375)
+      // 下划线
+      ctx.setLineWidth('0.1')
+      ctx.beginPath()
+      ctx.moveTo(15, this.FullWidth*294/375)
+      ctx.lineTo(this.FullWidth-15, this.FullWidth*294/375)
+      ctx.stroke()
+     
+
+      // 小程序码
+      ctx.drawImage(code, (this.FullWidth - 120)/2, this.FullWidth*324/375, this.FullWidth*130/375, this.FullWidth*130/375)
+
+       // 提示文字
+      ctx.setFillStyle('#000')
+      ctx.setFontSize(this.FullWidth*15/375)
+      let tip = '长按识别小程序，参与拼团'
+      ctx.fillText(tip, (this.FullWidth - tip.length*15)/2, this.FullWidth*490/375)
+
+      ctx.draw(false,function(){
+        wx.hideLoading();
+      });
+      
+    }
+
+     // 获取图片及信息
+    getImgAndInfo(){
+      let that = this;
+      let params = {
+        method:'post',
+        data:{project_id: this.project_id, group_inviter_id: this.group_inviter_id}
+      }
+      wx.showLoading({
+          title:'图片生成中',
+          mask: true ,
+      })
+      wepy.request({
+            // url: 'https://api.gaosiedu.com/happyplan/wxacode',
+            url: 'http://faq_dev.gaosiedu.com/api/wxacode',
+            method:'post',
+            data: {project_id: this.project_id, group_inviter_id: this.group_inviter_id},
+            header: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'XX-Token': wx.getStorageSync('token')
+            },
+            success: res=>{
+             /*  if(res.statusCode == 200){
+                  // 登录成功
+                  if(res.data.code == 1){
+                      let urls = [res.data.data.project_image, res.data.data.project_wxacode_image]
+                      downloadSaveFiles({
+                          urls: urls,
+                          success: function (resp) {
+                              // 全部下载成功
+                              console.log(resp)
+                              //that.drawSharePic(res.data.data.project_image,res.data.data.project_title,res.data.data.project_price, r.tempFilePath)
+                          },
+                          fail: function (e) {
+                            // 其中有一个下载失败
+                            wx.showToast({
+                                title:'图片下载失败',
+                                icon:'none',
+                            })
+                          }
+                      });
+                      that.$apply();
+                  }else{
+                      wx.showToast({
+                          title: res.data.msg,
+                          icon: 'none',
+                      })
+                  }
+                }else{
+                  wx.showToast({
+                    title: '请求出现错误',
+                    icon: 'none',
+                  })
+                } */
+                if(res.statusCode == 200){
+                  // 登录成功
+                  if(res.data.code == 1){
+                      let urls = [res.data.data.project_image, res.data.data.project_wxacode_image]
+                      wx.downloadFile({
+                        url: res.data.data.project_image, 
+                        success (re) {
+                          if (re.statusCode === 200) {
+                            let topimg = re.tempFilePath
+                            console.log(topimg)
+                            wx.downloadFile({
+                              url: res.data.data.project_wxacode_image, 
+                              success (r) {
+                                if (r.statusCode === 200) {
+                                  that.drawSharePic(topimg,res.data.data.project_title,res.data.data.project_price, r.tempFilePath)
+                                  
+                                }
+                              }
+                            })
+                          }
+                        }
+                      })
+                      this.$apply();
+                  }else{
+                      wx.showToast({
+                          title:res.data.msg,
+                          icon:'none',
+                      })
+                  }
+                }else{
+                  wx.showToast({
+                      title:'请求出现错误',
+                      icon:'none',
+                    })
+                }
+            },
+            fail: err =>{
+                console.log(err)
+                wx.showToast({
+                    title:'网络或服务器出错',
+                    icon:'none',
+                })
+                // reject(new Error('Network request failed'))
+            }
+        })
+    }
+    onLoad(params) {
+      console.log(downLoadFiles)
+      this.project_id = params.project_id;
+      this.group_inviter_id = params.group_inviter_id;
+      let that = this;
+      wx.getSystemInfo({
+        success: function(res) {
+          that.FullWidth = res.windowWidth
+          that.FullHeight = res.windowHeight
+          that.getImgAndInfo();
+        }
+      })
+     
+     
+
+    }
+
+    
+  }
+</script>
