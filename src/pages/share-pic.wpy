@@ -161,7 +161,7 @@
           mask: true ,
       })
       wepy.request({
-            // url: 'https://api.gaosiedu.com/happyplan/wxacode',
+            // url: 'https://api.gaosiedu.com/happyplan/wxacode', //正式
             url: 'http://faq_dev.gaosiedu.com/api/wxacode',
             method:'post',
             data: {project_id: this.project_id, group_inviter_id: this.group_inviter_id},
@@ -170,7 +170,7 @@
                 'XX-Token': wx.getStorageSync('token')
             },
             success: res=>{
-             /*  if(res.statusCode == 200){
+              /* if(res.statusCode == 200){
                   // 登录成功
                   if(res.data.code == 1){
                       let urls = [res.data.data.project_image, res.data.data.project_wxacode_image]
@@ -179,7 +179,7 @@
                           success: function (resp) {
                               // 全部下载成功
                               console.log(resp)
-                              //that.drawSharePic(res.data.data.project_image,res.data.data.project_title,res.data.data.project_price, r.tempFilePath)
+                              that.drawSharePic(resp[1],res.data.data.project_title,res.data.data.project_price,resp[0])
                           },
                           fail: function (e) {
                             // 其中有一个下载失败
@@ -226,16 +226,16 @@
                       })
                       this.$apply();
                   }else{
-                      wx.showToast({
-                          title:res.data.msg,
-                          icon:'none',
-                      })
+                    wx.showToast({
+                      title:res.data.msg,
+                      icon:'none',
+                    })
                   }
                 }else{
                   wx.showToast({
-                      title:'请求出现错误',
-                      icon:'none',
-                    })
+                    title:'请求出现错误',
+                    icon:'none',
+                  })
                 }
             },
             fail: err =>{
@@ -249,7 +249,7 @@
         })
     }
     onLoad(params) {
-      console.log(downLoadFiles)
+      // console.log(downLoadFiles)
       this.project_id = params.project_id;
       this.group_inviter_id = params.group_inviter_id;
       let that = this;

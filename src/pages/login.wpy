@@ -85,7 +85,7 @@
                       if(that.from == '/pages/order'){
                         that.$switch(that.from)
                       }else{
-                        that.$redirect(that.from,{activityId:that.activityId,groupInviterId:that.groupInviterId})
+                        that.$redirect(that.from,{activityId:that.activityId,groupInviterId:that.groupInviterId,from:'login',buyPrice: that.buyPrice})
                       }
                       // 登录完成 跳转到登录之前的页面,并将携带用户信息
                       // this.$navigate('/pages/login',{
@@ -136,44 +136,12 @@
             }
           })
          
-          /* wx.login({
-            success:function(resw){
-              // console.log(resw)
-              if(resw.code){
-                let params = {
-                  method:'post',
-                  data:{
-                    code:resw.code,
-                    encrypted_data_4phone:res.detail.encryptedData, //phone
-                    iv_4phone: res.detail.iv, // phone
-                    encrypted_data:that.encrypted_data,
-                    iv: that.iv,
-                    raw_data: that.raw_data,
-                    signature: that.signature
-                  }
-                }
-                // 登录
-                wxRequest(params,'/login').then(r => {
-                      // 储存token
-                      wx.setStorageSync('token', r.data.data.token)
-                      wx.setStorageSync('user', r.data.data.user)
-                      // 登录完成 跳转到登录之前的页面,并将携带用户信息
-                      if(that.from == '/pages/order'){
-                        that.$switch(that.from)
-                      }else{
-                        that.$redirect(that.from,{activityId:that.activityId})
-                      }
-                })
-                 
-                
-              }
-            }
-          }) */
+          
         }
         
       },
       loginAsPhone(){
-        this.$navigate('/pages/login-phone')
+        this.$navigate('/pages/login-phone',{from: this.from,activityId: this.activityId,groupInviterId:this.groupInviterId,buyPrice: this.buyPrice})
       }
     }
 
@@ -181,7 +149,7 @@
     }
     
     onLoad(param) {
-      
+      console.log(param)
       this.from = param.from;
       // this.raw_data = param.raw_data;
       // this.signature = param.signature;
@@ -189,6 +157,7 @@
       this.iv = param.iv;
       this.activityId = param.activityId;
       this.groupInviterId = param.groupInviterId;
+      this.buyPrice = param.buyPrice;
     }
   }
 </script>

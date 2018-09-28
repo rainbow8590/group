@@ -230,7 +230,7 @@
       return {
         title:groupTitle,
         path: '/pages/group-detail?groupInviterId='+groupInviterId+'&activityId='+groupId,
-        imageUrl:this.activityInfo.project_top_image,
+        imageUrl:this.activityInfo.project_cover_image ? this.activityInfo.project_cover_image : this.activityInfo.project_top_image,
         success: function(res){
           that.showFriend = false;
           that.hideFriend = true;
@@ -243,16 +243,16 @@
     }
    // 获取活动详情数据
     getActivity(){
-     
-      let groupInviterId = this.activity.project_group_user[0].user_id
+      let users = this.activity.project_group_user;
+      let groupInviterId = (users.length > 0 && users.length < this.activity.project_group_num) ? users[0].user_id:this.ActicityUser.user_id;
       let params = {
         method:'post',
         data:{id: this.activity.id, group_inviter_id: groupInviterId}
         // data:{id: 42, group_inviter_id: 0}
       }
       wxRequest(params,'/project/item').then(res => {
-        console.log('测试昵称')
-        console.log(res)
+        // console.log('测试昵称')
+        console.log(res.data.data)
         this.activityInfo = res.data.data;
         this.ajaxOver =  true;
         this.$apply();

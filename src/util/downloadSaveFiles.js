@@ -59,9 +59,12 @@ export default function downloadSaveFiles(obj) {
             success: function (res) {
                 let savedFilePath = res.savedFilePath;            
                 savedFilePaths.push(savedFilePath);
+                console.log(urls)
+                console.log(savedFilePaths)
                  //如果所有的文件都下载下来了 才进行下载完成后的操作
                 if (savedFilePaths.length == urlsLength) {
                     if (success){
+                        
                         success(savedFilePaths)
                     }
                 }

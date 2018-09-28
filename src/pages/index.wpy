@@ -74,7 +74,7 @@
             </view>
           </view>
         </view>
-        <button class="form-btn" formType="submit"> </button>
+        <button class="form-btn" formType="submit" > </button>
       </form>
     </repeat>
   </view>
@@ -99,6 +99,7 @@
     data = {
       activityList:[],
       windowHeight:0,
+      activityId:null
       // countDown:10,
       // status: 1
     }
@@ -109,6 +110,8 @@
 
     methods = {
       goGroupDetail(id,e){
+        console.log(id)
+        this.activityId = id; // 用于数据分析
         console.log(id)
         // 将formId绑定到活动列表页面. 点击就获取formId, 然后后台存储备用
         console.log(e.detail.formId)
