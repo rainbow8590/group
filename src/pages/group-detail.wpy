@@ -306,7 +306,7 @@
     </view>
     <view class="activity-title activity-title1 flex">
       <text>{{activity.project_title}}</text>
-      <button class="share-wrap flex" open-type="share" wx:if="{{activity.project_signup_end_time*1000 > nowTime}}">
+      <button class="share-wrap flex" open-type="share" wx:if="{{activity.project_signup_end_time*1000 > nowTime && activity.published_time!= 0}}">
         <image class="share" src="../image/share.png" />
         <text>分享</text>
       </button>
@@ -379,9 +379,9 @@
         <button class="look-order" formType="submit">查看订单 > </button>
       </form> -->
     </view>
-  <!-- {{groupInviterId}}---0000 -->
+  <!-- {{activity.published_time}}~~0000 -->
     <image src="{{activity.project_content_image}}" mode="widthFix" />
-    <view wx:if="{{activity.project_signup_end_time*1000 > nowTime || (activity.project_signup_end_time*1000 < nowTime &&activity.order_status == 1 )}}">
+    <view wx:if="{{activity.published_time!= 0&& (activity.project_signup_end_time*1000 > nowTime || (activity.project_signup_end_time*1000 < nowTime &&activity.order_status == 1 ))}}">
       <view wx:if="{{!ActicityUser}}">
         <view class="btns flex" wx:if="{{activity.project_type == 3  }}">
           <view class="btn redirect">
@@ -605,7 +605,7 @@
     </view>
 
     <!-- 活动已结束按钮 -->
-    <view class="btns  flex" wx:if="{{activity.project_signup_end_time*1000 < nowTime && activity.order_status != 1 }}">
+    <view class="btns  flex" wx:if="{{activity.project_signup_end_time*1000 < nowTime && activity.order_status != 1 || activity.published_time==0}}">
       <view class="btn redirect group-over">
         <text>活动已结束</text>
       </view>

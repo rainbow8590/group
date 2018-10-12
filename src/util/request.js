@@ -19,6 +19,8 @@ function wxRequest(params,url,loading=true){
             },
             success: res=>{
                 if(res.statusCode == 200){
+                    
+                    
                     // 登录成功
                     if(res.data.code == 1){
                         resolve(res)
