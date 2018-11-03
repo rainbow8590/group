@@ -1,0 +1,262 @@
+<style lang="less">
+ .container {
+  position: relative;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  justify-content: flex-start;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background-color: #fff;
+}
+
+.flex {
+  display: flex;
+}
+.list{
+  width: 702rpx;
+  height: 172rpx;
+  padding: 0 0 0 40rpx;
+  border-radius: 8rpx;
+  border: 1px solid #EBEBEB;
+  justify-content: space-between;
+  flex-direction: column;
+  line-height: 60rpx;
+  font-size: 28rpx;
+  justify-content: center;
+  box-sizing: border-box;
+  margin: 0 auto 20rpx;
+}
+
+.title{
+  padding: 45rpx 0 35rpx 42rpx;
+  font-size: 40rpx;
+  line-height: 40rpx;
+  width: 100%;
+  box-sizing: border-box;
+  font-weight:bold;
+}
+
+.tip{
+  padding-bottom: 20px;
+  font-size: 26rpx;
+  text-align: center;
+}
+
+.nodata{
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.nodata image{
+  width: 550rpx;
+  height: 550rpx;
+}
+.nodata text{
+  font-size: 28rpx;
+  color: #B3B3B3;
+  margin-bottom: 200rpx;
+}
+
+  
+</style>
+<template>
+  <view class="container">
+
+    <!-- {{isAjaxOver1}} {{isAjaxOver}} {{lists.length}} -->
+    <view wx:if="{{isAjaxOver1}}">
+      <view wx:if="{{!discountLists.length}}" class="nodata flex">
+        <image src="../image/nodata.png" /> 
+        <text>暂无领取记录</text>    </view>
+      <view wx:if="{{discountLists.length}}">
+        
+        <scroll-view class="lists" scroll-y style="height: {{windowHeight}}px;" scroll-top="{{scrollTop}}" bindscroll="getScrollTop" lower-threshold="50" bindscrolltolower="scrolltolower">
+          <view class="title">{{total}}个家长已领取</view>
+          <repeat for="{{discountLists}}" key="index" index="index" item="item">
+            <view class="list flex" >
+              <view class="student-name">学员名称： {{item.StudentName}}</view>
+              <view class="student-phone">手机号： {{item.Phone}}</view>
+            </view>
+          </repeat>
+          <view class="tip" wx:if="{{showTip}}">已经到最后了~</view>
+        </scroll-view>
+
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  import md5 from '../util/md5'
+  
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '家长领取记录',
+      disableScroll: true
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+      teacherCode:'',
+      teacherToken:'',
+      pageSize:10,
+      discountLists:[],
+      isAjaxOver1: false,
+      isAjaxOver: true,
+      total: 0,
+      scrollTop:0,
+      showTip: false
+    }
+
+    computed = {
+
+    }
+
+    methods = {
+      getScrollTop: function(e){
+        this.scrollTop= e.detail.scrollTop
+      },
+      scrolltolower: function(){
+        console.log(this.isAjaxOver,'123456')
+        console.log(this.lists.length , this.total)
+        if(this.discountLists.length == this.total) return;
+        if(this.isAjaxOver == true){
+          this.page++;
+          this.getList();
+        }
+      }
+    }
+
+    events = {
+     
+    }
+
+
+    onLoad(option) {
+      console.log(option)
+      let that = this;
+      this.page = 1;
+      this.isAjaxOver1 = false;
+      this.isAjaxOver = true;
+      this.teacherToken = option.teacherToken;
+      this.teacherCode = option.teacherCode;
+      
+      wx.getSystemInfo({
+        success: function(res) {
+          that.setData({
+            windowHeight: res.windowHeight,
+            windowWidth: res.windowWidth,
+          })
+        }
+      });
+      this.getList();
+    }
+
+    getList(){
+      if(!this.isAjaxOver) return; 
+      this.isAjaxOver = false;
+      let that = this;
+      // var htp = 'https://tapitest.gaosiedu.com/';   // 升班优惠券   測試環境
+      // var htp = 'http://47.94.40.214:8083/';   // 直播用8083   測試環境
+      // var htp = 'http://47.94.40.214:8023/'; // 课酬用8023  预发布环境
+      var htp = 'https://teacherapi.gaosiedu.com/';
+          var query = {
+              appid: 'web',
+              teachercode:this.teacherCode,
+              pageindex: this.page,
+              pagesize: that.pageSize,
+          }
+          let query1 = this.sortQuery(query);
+          let sign = md5(query1 + 'test');
+          if(that.page == 1){
+            that.discountLists = [];
+            
+          }
+          wx.showLoading({
+            title:'努力加载中...',
+            success: function(){
+               wepy.request({
+                url: htp + 'api/Activity/GetTeacherSentInfo',
+                method:'GET',
+                data:{
+                  appid: 'web',
+                  teachercode:that.teacherCode,
+                  pageindex: that.page,
+                  pagesize: that.pageSize,
+                  sign: sign
+                },
+                header: {},
+                success: res=>{
+                  console.log(res)
+                      if(res.data.ResultType == 0){
+                        that.isAjaxOver1 = true;
+                        var resData = res.data.AppendData;
+                        if(resData.length){
+                          for(var i = 0; i < resData.length; i++){
+                            resData[i]['Phone'] = resData[i]['Phone'].replace(/(\d{3})(\d{4})(\d{4})/,"$1****$3")
+                          }
+                          
+                          var resData1 = that.discountLists.concat(resData)
+                          that.discountLists =  resData1;
+                          that.total = res.data.Message;
+                          that.isAjaxOver = true;
+                          if(resData.length < that.pageSize){
+                            that.showTip = true;
+                            that.isAjaxOver = false;
+                          }
+                        }
+                       
+                      }
+                      that.$apply();
+                      setTimeout(()=>{
+                        wx.hideLoading();
+                      },500)
+                },
+                fail: err =>{
+                    console.log(err)
+                    wx.showToast({
+                        title:'网络或服务器出错',
+                        icon:'none',
+                    })
+                    
+                }
+              })
+            }
+          })
+         
+    }
+    sortQuery(obj){
+      // 先获取所有属性名
+      var keys = [];
+      for (var key in obj){
+        keys.push(key);
+      }
+      // 排序
+      keys.sort();
+      // 导出新的对象
+      var r = {};
+      for (var i = 0; i < keys.length; i++){
+        key = keys[i];
+        r[key] = obj[key];
+      }
+      // 将排序好的对象转为请求参数
+      var str = '';
+      for(var k in r){
+        str += k+'='+r[k]+'&'
+      }
+      return str.substr(0,str.length-1);
+    }
+    
+  
+    
+  }
+</script>

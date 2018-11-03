@@ -1,7 +1,7 @@
 import wepy from 'wepy'
 function wxRequest(params,url,loading=true){
-    // let htp = 'https://api.gaosiedu.com/happyplan' //正式
-    let htp = 'http://faq_dev.gaosiedu.com/api'
+    let htp = 'https://api.gaosiedu.com/happyplan' //正式
+    // let htp = 'http://faq_dev.gaosiedu.com/api'
     return new Promise((resolve,reject)=>{
         if(loading){
             wx.showLoading({

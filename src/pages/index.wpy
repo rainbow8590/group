@@ -35,6 +35,8 @@
 </style>
 <template>
   <view class="container" style="height:{{windowHeight}}px">
+    <!-- <web-view src="https://itunes.apple.com/cn/app/id1166474372?mt=8"></web-view> -->
+    <!-- <button @tap="goGroupDetail">11223</button> -->
     <repeat for="{{activityList}}" key="index" index="index" item="item">
       <form @submit="goGroupDetail('{{item.id}}')" report-submit="true">
         <view class="activity" >
@@ -86,6 +88,7 @@
   // import 'wepy-async-function'
   // import API from '../mixins/data'
   import wxRequest from '../util/request'
+
   
   export default class Index extends wepy.page {
     config = {
@@ -111,12 +114,13 @@
 
     methods = {
       goGroupDetail(id,e){
-        console.log(id)
+        // console.log(id)
         this.activityId = id; // 用于数据分析
-        console.log(id)
+        // console.log(id)
         // 将formId绑定到活动列表页面. 点击就获取formId, 然后后台存储备用
-        console.log(e.detail.formId)
+        // console.log(e.detail.formId)
         this.$navigate('/pages/group-detail',{activityId:id,form_id:e.detail.formId})
+        // this.$navigate('/pages/discount')
       },
 
       
@@ -198,6 +202,8 @@
     onShow(){
       // 获取活动列表
       this.getActivityList();
+     
     }
+ 
   }
 </script>

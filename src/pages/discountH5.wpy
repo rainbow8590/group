@@ -1,0 +1,63 @@
+<style lang="less">
+ 
+</style>
+<template>
+  <view class="container">
+    <!-- {{teacherCode}} -->
+    <web-view src="https://res-erp.gaosiedu.com/app/sqdiscount/index.html#/?teacherCode={{teacherCode}}"></web-view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  // import wxRequest from '../util/request'
+  
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '',
+      // disableScroll: true
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+      teacherCode:''
+    }
+
+    computed = {
+
+    }
+
+    methods = {
+
+    }
+
+    events = {
+     
+    }
+
+
+    onLoad(option) {
+      console.log('lexiang')
+      console.log(option)
+      this.teacherCode = option.teacherCode;
+    }
+    onShow(){
+    }
+    onShareAppMessage(){
+      var that = this;
+      return {
+        title: '2019寒春升班专属优惠,快将这份小幸运分享给您的学生们吧~',
+        path: '/pages/discountH5?teacherCode='+this.teacherCode,
+        imageUrl:'../image/discount_share.png',
+        // success: function(res){
+        //   //点击发送后的回调 记录分享次数
+        // // that.TeacherShare(that.data.teacherCode,uid)
+        // }
+      }
+    }
+  }
+</script>

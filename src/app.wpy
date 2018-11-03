@@ -43,12 +43,16 @@ export default class extends wepy.app {
       "pages/login-phone", // 手机验证码登录
       "pages/login",
       "pages/order-detail", // 订单详情
+      "pages/discountH5", // 领取升班优惠
+      "pages/discount", // 领取升班优惠
+      "pages/discountRecord" // 领取升班优惠
     ],
     "window": {
       "backgroundTextStyle": "light",
       "navigationBarBackgroundColor": "#fff",
       "navigationBarTitleText": "高思乐享",
-      "navigationBarTextStyle": "black"
+      "navigationBarTextStyle": "black",
+      "enablePullDownRefresh": false
     },
     "tabBar": {
       "color":"#999999",
