@@ -34,9 +34,12 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     "pages": [
-      "pages/index", // 支付成功
+      "pages/index", // 首页
+      "pages/select-school", // 选择校区
+      "pages/pay-success-school", // 选择校区时间段
       "pages/share-pic", // 生成分享图片
       "pages/pay-success", // 支付成功
+     
       "pages/launch-group", // 发起拼团成功页面
       "pages/group-detail", // 拼团详情
       "pages/order", // 订单列表
@@ -45,7 +48,7 @@ export default class extends wepy.app {
       "pages/order-detail", // 订单详情
       "pages/discountH5", // 领取升班优惠
       "pages/discount", // 领取升班优惠
-      "pages/discountRecord" // 领取升班优惠
+      "pages/discountRecord", // 领取升班优惠
     ],
     "window": {
       "backgroundTextStyle": "light",
@@ -90,7 +93,7 @@ export default class extends wepy.app {
 
   onLaunch() {
     console.log(23)
-    let res = wx.getSystemInfoSync()
+    let res = wx.getSystemInfoSync();
     this.globalData.windowHeight = res.windowHeight
     // console.log(wx.getStorageSync('token'))
     
@@ -140,9 +143,9 @@ export default class extends wepy.app {
         showCancel: false,
         content: '当前微信版本过低，请升级最新微信版本。',
         success: function(){
-          wx.navigateBack({
-            delta: 1
-          })
+          // wx.navigateBack({
+          //   delta: 1
+          // })
         }
       })
     }

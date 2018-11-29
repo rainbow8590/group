@@ -4,12 +4,13 @@
 <template>
   <view class="container">
     <!-- {{teacherCode}} -->
-    <web-view src="https://res-erp.gaosiedu.com/app/sqdiscount/index.html#/?teacherCode={{teacherCode}}"></web-view>
+    <web-view src="{{url}}"></web-view>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
+  import md5 from '../util/md5'
 
   // import wxRequest from '../util/request'
   
@@ -24,6 +25,7 @@
     mixins = []
 
     data = {
+      url:'',
       teacherCode:''
     }
 
@@ -41,23 +43,89 @@
 
 
     onLoad(option) {
-      console.log('lexiang')
-      console.log(option)
+      // console.log('lexiang')
+      // console.log(option)
       this.teacherCode = option.teacherCode;
+      this.url ='https://res-erp.gaosiedu.com/app/sqdiscount/index.html#/?teacherCode=' + option.teacherCode;
     }
     onShow(){
     }
     onShareAppMessage(){
       var that = this;
+      that.TeacherShare()
       return {
-        title: '2019寒春升班专属优惠,快将这份小幸运分享给您的学生们吧~',
-        path: '/pages/discountH5?teacherCode='+this.teacherCode,
+        title: '快来领取2019寒春升班专属优惠吧！',
+        path: '/pages/discountH5?teacherCode='+that.teacherCode,
         imageUrl:'../image/discount_share.png',
         // success: function(res){
         //   //点击发送后的回调 记录分享次数
         // // that.TeacherShare(that.data.teacherCode,uid)
         // }
       }
+    }
+    TeacherShare(){
+ 
+      let that = this;
+      // var htp = 'https://tapitest.gaosiedu.com/';   // 升班优惠券   測試環境
+      // var htp = 'http://47.94.40.214:8083/';   // 直播用8083   測試環境
+      // var htp = 'http://47.94.40.214:8023/'; // 课酬用8023  预发布环境
+      var htp = 'https://teacherapi.gaosiedu.com/';
+          var query = {
+              appid: 'web'
+          }
+          var data = {
+            "TeacherCode": that.teacherCode,
+            "ShareCode": that.guid()
+          }
+          let query1 = this.sortQuery(query);
+          let sign = md5(query1+'&'+ JSON.stringify(data) + 'test');
+              wepy.request({
+                url: htp + 'api/Activity/TeacherShare',
+                method:'POST',
+                data:data,
+                header: {
+                  appid: 'web',
+                  sign: sign
+                },
+                success: res=>{
+                  console.log(res)
+                },
+                fail: err =>{
+                    console.log(err)
+                    wx.showToast({
+                        title:'网络或服务器出错',
+                        icon:'none',
+                    })
+                }
+              })
+         
+    }
+    sortQuery(obj){
+      // 先获取所有属性名
+      var keys = [];
+      for (var key in obj){
+        keys.push(key);
+      }
+      // 排序
+      keys.sort();
+      // 导出新的对象
+      var r = {};
+      for (var i = 0; i < keys.length; i++){
+        key = keys[i];
+        r[key] = obj[key];
+      }
+      // 将排序好的对象转为请求参数
+      var str = '';
+      for(var k in r){
+        str += k+'='+r[k]+'&'
+      }
+      return str.substr(0,str.length-1);
+    }
+    guid() {
+          function S4() {
+            return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+          }
+          return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
     }
   }
 </script>

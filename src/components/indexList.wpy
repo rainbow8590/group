@@ -1,0 +1,83 @@
+<style lang="less">
+  @import '../util/public.less';
+.activity{
+    width: 100%;
+    padding-top: 34rpx;
+    padding-bottom: 58rpx;
+    border-bottom: 1px solid #e4e4e4;
+    box-sizing: border-box;
+    .banner{
+      image{
+        width: 100%;
+      }
+    }
+  }
+</style>
+<template>
+ <view style="width: 100%">
+      <form @submit="goGroupDetail('{{item.id}}')" report-submit="true">
+        <view class="activity" >
+          <view class="banner"><image src="{{item.project_image}}" mode="widthFix" /></view>
+          <!-- <view class="banner"><image src="../image/demo.jpg" mode="widthFix" /></view> -->
+
+          <view class="activity-title">{{item.project_title}}</view>
+          <view class="info">
+            <view class="buy flex">
+                <view class="des">
+                  <view class="time">{{item.project_time}}</view>
+                  <!-- 单独购买价格展示 -->
+                  <view class="price flex"  wx:if="{{item.project_type==1}}">
+                    <view class="now-price">¥{{item.project_price}}</view>
+                  </view>
+                  <!-- 仅团购价格展示 -->
+                  <view class="price flex"  wx:if="{{item.project_type==2}}">
+                    <view class="now-price">¥{{item.project_group_price}}</view>
+                    <view class="old-price flex">
+                      <text class="old" style="opacity:0">¥{{item.project_price}}</text>
+                      <text>{{item.project_group_num}}人团</text>
+                    </view>
+                  </view>
+                  <!-- 单独购买和团购价格展示 -->
+                  <view class="price flex"  wx:if="{{item.project_type==3}}">
+                    <view class="now-price">¥{{item.project_group_price}}</view>
+                    <view class="old-price flex">
+                      <text class="old">¥{{item.project_price}}</text>
+                      <text>{{item.project_group_num}}人团</text>
+                    </view>
+                  </view>
+                </view>
+                <view class="btn">
+                  <button style="opacity:{{item.order_status == -1? '1': '0'}}">购买</button>
+                  <!-- <button @tap.stop="goBuy('{{item.id}}')">购买</button> -->
+                  <view>{{item.signup_num}}人已购买</view>
+                </view>
+            </view>
+          </view>
+        </view>
+        <button class="form-btn" formType="submit" > </button>
+      </form>
+ </view>
+</template>
+<script>
+  import wepy from 'wepy'
+
+  export default class IndexList extends wepy.component {
+    data = {
+    }
+    props = {
+      item:Object
+    }
+    events = {
+      
+    }
+
+    methods = {
+      goGroupDetail(id,e){
+        this.$emit('goGroupDetail',id,e)
+      }
+    }
+
+    onLoad () {
+    }
+  }
+</script>

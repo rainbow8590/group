@@ -60,34 +60,7 @@
     width:100%;
     padding: 0 34rpx;
     box-sizing: border-box;
-    .order-wrap{
-      padding: 40rpx 0;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid #e4e4e4;
-    }
-    .order-title{
-      font-size: 28rpx;
-      line-height: 28rpx;
-      margin-bottom: 16rpx;
-    }
-    .order-time{
-      font-size: 26rpx;
-      line-height: 26rpx;
-      color: #969696;
-    }
-    .order-state{
-      font-size: 26rpx;
-      align-items: center;
-    }
-    .order-arrow{
-      width: 7px;
-      height: 7px;
-      border-top: 1px solid #1e1e1e;
-      border-right: 1px solid #1e1e1e;
-      transform: rotate(45deg);
-      margin-left: 28rpx;
-    }
+    
   }
 </style>
 <template>
@@ -106,7 +79,8 @@
       <view class="no-order" wx:if="{{ActicityUser&&!orderList.length}}">还没有订单~</view>
       <view class="order" wx:if="{{orderList.length}}">
         <repeat for="{{orderList}}" key="index" index="index" item="item">
-          <form @submit="goOrderDetail('{{index}}')" report-submit="true">
+          <order-list :item="item" :index="index"></order-list>
+          <!-- <form @submit="goOrderDetail('{{index}}')" report-submit="true">
             <view class="order-wrap flex" >
               <view class="order-info">
                 <view class="order-title">{{item.project_title}}</view>
@@ -116,7 +90,7 @@
                 <text>{{item.order_state }}</text> <text class="order-arrow"></text></view>
             </view>
             <button class="form-btn" formType="submit">11</button>
-          </form>
+          </form> -->
         </repeat>
       </view>
     </view>
@@ -127,6 +101,7 @@
 <script>
   import wepy from 'wepy'
   import wxRequest from '../util/request'
+  import OrderList from '../components/orderList'
   import {timestampToTime} from '../util/public'
   
   export default class Order extends wepy.page {
@@ -134,7 +109,9 @@
       navigationBarTitleText: '个人中心',
       // disableScroll: true
     }
-    components = {}
+    components = {
+      'order-list': OrderList
+    }
 
     mixins = []
 
@@ -147,11 +124,11 @@
     computed = {}
 
     methods = {
-      goOrderDetail(tipIndex,e){
-        let activityInfo = this.orderList[tipIndex]
-        this.$navigate('/pages/order-detail',{orderId: activityInfo.order_id,formId:e.detail.formId})
-        // this.$navigate('/pages/launch-group',{orderId: activityInfo.order_id,formId:e.detail.formId})
-      },
+      // goOrderDetail(tipIndex,e){
+      //   let activityInfo = this.orderList[tipIndex]
+      //   this.$navigate('/pages/order-detail',{orderId: activityInfo.order_id,formId:e.detail.formId})
+      //   // this.$navigate('/pages/launch-group',{orderId: activityInfo.order_id,formId:e.detail.formId})
+      // },
       goLogin(res){
         console.log(1111)
         console.log(res)
@@ -198,6 +175,17 @@
     }
     events = {
       // 组件上的事件
+      goOrderDetail(tipIndex,e){
+        let activityInfo = this.orderList[tipIndex];
+        let projectStyle = this.orderList[tipIndex].project_style;
+        if(projectStyle == 1){ //单校区
+          this.$navigate('/pages/order-detail',{orderId: activityInfo.order_id,formId:e.detail.formId})
+        }else if(projectStyle == 2){
+          this.$navigate('/pages/pay-success-school',{orderId: activityInfo.order_id,formId:e.detail.formId})
+        }
+        
+        // this.$navigate('/pages/launch-group',{orderId: activityInfo.order_id,formId:e.detail.formId})
+      },
     }
     
     /* onTabItemTap(item) {
@@ -261,7 +249,7 @@
     }
     
     onLoad(params) {
-      console.log(34434)
+      // console.log(34434)
        
       // this.token =  wx.getStorageSync('token');
       //首次进入订单页面, 先判断是否登录, 登录了再请求订单列表

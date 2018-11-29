@@ -1,0 +1,418 @@
+<style lang="less">
+  @import '../util/public.less';
+  .container{
+    height: 100%;
+  }
+  .success{
+    width: 100%;
+    align-items: center;
+    border-bottom: 1px solid #ebebeb;
+    padding-bottom: 30rpx;
+    image{
+      width: 179rpx;
+      height: 179rpx;
+      padding-left: 30rpx;
+      padding-right: 30rpx;
+    }
+    .buy-info{
+      flex: 1;
+      flex-wrap: nowrap;
+      flex-direction: column;
+      font-size: 28rpx;
+      color: #888888;
+      line-height: 75rpx;
+      .buy-s{
+        font-size: 40rpx;
+        color: #333;
+      }
+      .buy-p{
+        font-size: 40rpx;
+        color: #f55858;
+      }
+    }
+  }
+  .buy-infos{
+    border-bottom: 1px solid #ebebeb;
+    padding-bottom: 30rpx;
+    width: 100%;
+    padding-left: 50rpx;
+    box-sizing: border-box;
+    padding-top: 40rpx;
+    font-size: 28rpx;
+    color: #888;
+    flex-direction:column;
+    justify-content: flex-start;
+    line-height: 65rpx;
+    .buy-title{
+      font-size: 40rpx;
+      color: #333;
+    }
+    .see-map{
+      // font-size: 28rpx;
+      color: #69bd78;
+      margin-left: 30rpx;
+    }
+    .arrow{
+      display: inline-block;
+      width: 18rpx;
+      height: 18rpx;
+      border-top: 1px solid #69bd78;
+      border-right: 1px solid #69bd78;
+      transform: rotate(45deg)
+    }
+  }
+  /* .lesson-info{
+    width: 690rpx;
+    flex-direction: column;
+    border-bottom: 1px solid #e4e4e4;
+    line-height: 50rpx;
+    padding-bottom: 50rpx;
+    text{
+      font-size: 26rpx;
+      color: #313131;
+    }
+    .lesson-title{
+      font-size: 30rpx;
+    }
+    .lesson-time{
+      font-size: 26rpx;
+    }
+    .lesson-price{
+      font-size: 36rpx;
+      color: #ff3c00;
+      
+    }
+  } */
+  .lesson-state{
+    width: 100%;
+    height: 185rpx;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    box-shadow: 0 8rpx 20rpx rgba(0,0,0,.2);
+    
+    .btn{
+      width: 590rpx;
+      height: 85rpx;
+      line-height: 85rpx;
+      font-size: 34rpx;
+      margin-top: 20rpx;
+      border-radius: 14rpx;
+    }
+    .btn1{
+      color: #fff;
+      border-color: @baseColor;
+      background: @baseColor;
+      //box-shadow: 0 8rpx 20rpx rgba(34,153,90,.5)
+    }
+    view{
+      font-size: 28rpx;
+      color: #888;
+      text-align: center;
+      line-height: 80rpx;
+    }
+    
+    
+  }
+  .lesson-state1{
+    height: 125rpx;
+    position: static;
+  }
+  .lesson-state2{
+    // padding-top: 150rpx;
+    box-shadow: 0 8rpx 20rpx rgba(0,0,0,0);
+  }
+
+  .map-wrap{
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,.5);
+    position: fixed;
+    left: 100%;
+    bottom: 0;
+  }
+  .map{
+    width: 100%;
+    padding-top: 56rpx;
+    box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    background: #fff;
+    border-top-left-radius: 20rpx;
+    border-top-right-radius: 20rpx;
+    .map-title,.map-title-des{
+      padding: 0 30rpx;
+    }
+    .map-title-des{
+      font-size: 28rpx;
+      line-height: 80rpx;
+      color: #888;
+    }
+    map{
+      width: 670rpx;
+      height: 480rpx;
+      margin: 0 auto;
+    }
+  }
+
+</style>
+
+<template>
+  <view class="container">
+    <view class="success flex">
+      <image src="../image/success-school.png" />
+      <view class="buy-info flex">
+        <text class="buy-s">购买成功</text>
+        <text>活动价格: <text class="buy-p">¥{{activityInfo.order_price}}</text></text>
+        <text>支付时间: {{activityInfo.create_time}}</text>
+        <text>订单编号: {{activityInfo.order_no}}</text>
+      </view>
+    </view>
+    <view class="buy-infos flex">
+      <text class="buy-title">{{activityInfo.project_title}}</text>
+      <text>主题: {{activityInfo._extra.project_theme}}</text>
+      <view><text>校区: {{activityInfo._extra.school_name}}</text> <text class="see-map" @tap="lookMap">查看地图 <text class="arrow"></text></text></view>
+    </view>
+    <view class="lesson-state lesson-state1 lesson-state2">
+      <button class="btn btn1" @tap="showGroupCode">加入活动微信群</button>
+      <view>加入活动微信群，及时了解活动动态</view>
+     
+    </view>
+    <!-- 加群提醒 -->
+    <view class="paypop {{show ?'fadein':''}} {{hide ?'fadeout':''}}">
+      <view class="paypop-wrap paypop-wrap1">
+          <view class="close close1"><text>加群提醒</text><image src="../image/close.png" @tap="closeGroupCode" /></view>
+          <view class="info info1">请在加群页面：</view>
+          <view class="price price1 flex">
+            <text>{{activityInfo._extra.project_wx_reply_text}}</text>
+            <text class="codedes">获取活动微信群二维码</text>
+          </view>
+          <button open-type="contact">知道了,去加群</button>
+      </view>
+    </view>
+    <!-- 地图 -->
+    <view class="map-wrap {{showMap ?'fadein':''}} {{hideMap ?'fadeout':''}}" >
+      <view class="map {{showMap?'easeIn':'easeOut'}}">
+        <view class="map-title">{{activityInfo._extra.school_name}}</view>
+        <view class="map-title-des">{{activityInfo._extra.school_address}}</view>
+        <!-- <map id="myMap" 
+        
+        longitude="{{location.longitude}}" 
+        latitude="{{location.latitude}}" 
+        scale="18"   
+        markers="{{markers}}"
+        bindcontroltap="code"> </map> -->
+
+        <!-- longitude="{{markers[0].longitude}}" 
+        latitude="{{markers[0].latitude}}"  -->
+        <map id="map" 
+        scale="14" 
+        longitude="{{longitude}}" 
+        latitude="{{latitude}}"
+        markers="{{markers}}" 
+        bindcontroltap="controltap" 
+        bindmarkertap="markertap" 
+        bindregionchange="regionchange" 
+        show-location 
+        style="width: 100%; height: 300px;"></map>
+        <view class="lesson-state lesson-state1" @tap="noMap"><button class="btn btn1">完成</button></view>
+      </view>
+    </view>
+    <!-- <view class="paypop {{show ?'fadein':''}} {{hide ?'fadeout':''}}">
+      <view class="paypop-wrap paypop-wrap1">
+          <view class="close close1"><text>加群提醒</text><image src="../image/close.png" @tap="closeGroupCode" /></view>
+          <view class="info info1">请在加群页面：</view>
+          <view class="price price1 flex">
+            <text>回复 {{activityInfo.project_wx_reply_text}}</text>
+            <text class="codedes">获取活动微信群二维码</text>
+          </view>
+          <button open-type="contact">知道了,去加群</button>
+      </view>
+    </view> -->
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import wxRequest from '../util/request'
+  import {showGroupCode,closeGroupCode} from '../util/public'
+  
+  export default class PaySuccessSchool extends wepy.page {
+    config = {
+      navigationBarTitleText: '购买成功',
+      // disableScroll: true
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+      isShowGroupCode: false,
+      show: false,
+      hide: false,
+      activityInfo:{},
+      longitude:null,
+      latitude:null,
+      markers: [],
+      showMap: false, // 控制地图显示隐藏
+      hideMap: false, // 控制地图显示隐藏
+    }
+
+    computed = {
+      
+    }
+
+    methods = {
+     
+      // 查看活动
+      goGroupDetail(){
+        this.$navigate('/pages/group-detail',{activityId:this.activityInfo.id,activityStatus:this.activityInfo.order_status});
+      },
+      // 点击加微信群 
+      showGroupCode(){
+        showGroupCode(this);
+      },
+      // 关闭加群弹窗
+      closeGroupCode(){
+        closeGroupCode(this);
+      },
+      //查看地图
+      lookMap(){
+        this.showMap = true;
+        this.hideMap = false;
+      },
+      //查看地图
+      noMap(){
+        this.showMap = false;
+        this.hideMap = true;
+      }
+    }
+
+    events = {
+     
+    }
+    // getLocation() {
+    //   // console.log(e)
+    //   var that = this
+    //   wx.getLocation( {
+    //     type: 'gcj02',
+    //     // type: 'wgs84',
+    //     success: function( res ) {
+    //       console.log( res )
+    //       that.setData( {
+           
+    //         marks:[{
+    //           longitude:116.340900,
+    //           latitude: 39.987090
+    //         }]
+    //       })
+    //     }
+    //   })
+    // }
+
+
+    // getLocation1(e){
+        
+    //   let params = {
+    //     method:'post',
+    //     data:{
+    //       id: this.activityId,
+    //       project_theme_id: this.project_theme_id,
+    //       school_area_id: this.school_area_id,
+    //       time_part_id: this.time_part_id,
+    //       order_id: this.order_id
+    //     }
+    //   }
+    //   wxRequest(params,'/project/filter/school').then(res => {
+    //     console.log(res)
+       
+    //     this.$apply();
+    //   })
+    // }
+
+
+    getOrder(orderId){
+      wxRequest({method:'post',data:{id:orderId}},'/order/item').then(res => {
+        if(res.data.code == 1){
+          this.activityInfo = res.data.data;
+          this.longitude = res.data.data._extra.school_coordinate[0];
+          this.latitude = res.data.data._extra.school_coordinate[1];
+          this.markers = [{
+            longitude:res.data.data._extra.school_coordinate[0],
+            latitude: res.data.data._extra.school_coordinate[1],
+            iconPath: "/image/address.png",
+            id: 0,
+            // latitude: 39.987090,
+            // longitude: 116.340900,
+            width: 30,
+            height: 30
+          }]
+          
+          console.log(res.data.data._extra.school_coordinate[0], res.data.data._extra.school_coordinate[1])
+          // if(this.activityInfo.order_type == 1){
+          //     if(this.activityInfo.order_status == 1){
+          //       this.activityInfo.order_state ='购买成功'
+          //     }else if(this.activityInfo.order_status == 0){
+          //       this.activityInfo.order_state ='未付款'
+          //     }else{
+          //       this.activityInfo.order_state ='已退款'
+          //     }
+          //   }else if(this.activityInfo.order_type == 2){
+          //     if(this.activityInfo.order_status == 1){
+          //       this.activityInfo.order_state ='团购成功'
+          //     }else if(this.activityInfo.order_status == 0){
+          //       this.activityInfo.order_state ='团购中'
+          //     }else{
+          //       this.activityInfo.order_state ='已退款'
+          //     }
+          //   }
+          this.$apply();
+        }else{
+          wx.showModal({
+            title: '提示',
+            content: res.data.msg,
+            showCancel: false
+          })
+        }
+      })
+    }
+    
+
+    onLoad(params) {
+      console.log(params)
+      this.showMap = false;
+      this.hideMap = false;
+      // this.activityInfo = JSON.parse(params.activityInfo);
+      // console.log(this.activityInfo)
+      this.getOrder(params.orderId)
+      // this.getLocation();
+      
+
+
+      // 查看是否授权过
+      // wx.getSetting({
+      //   success: (res) => {
+      //     console.log(res)
+      //     var data = res.authSetting;
+      //     if(!data.authSetting){
+      //       wx.authorize({
+      //           scope: 'scope.userInfo',
+      //           success(res) {
+      //              console.log(res)
+      //           }
+      //       })
+      //     }
+      //   }
+      // })
+    }
+    onUnload(){
+      // console.log('ims')
+      this.showMap = false;
+      this.hideMap = false;
+      this.$apply();
+      
+    }
+  }
+</script>

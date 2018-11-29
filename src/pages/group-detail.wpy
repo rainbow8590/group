@@ -418,8 +418,8 @@
         <!-- order_type  1 直接购买  2 团购 -->
         <!-- 单独购买, 显示价格 -->
         <view class="btns {{!activity.order_id?'':'btns1'}} flex" wx:if="{{activity.project_type == 1 || (activity.project_type == 3 && activity.order_type == 1) }}">
-          <!-- 未下单 -->
-          <block wx:if="{{!activity.order_id}}">
+          <!-- 未下单  或 多校区 -->   
+          <block wx:if="{{!activity.order_id || activity.project_style == 2}}">
             <view class="btn redirect redirect2 flex">
               <text>¥{{activity.project_price}}</text>
             </view>
@@ -427,8 +427,8 @@
               <button open-type="getUserInfo" @getuserinfo="lookPay(1,'{{activity.project_price}}')">立即报名</button>
             </view>
           </block>
-          <!-- 下单已付款 -->
-          <block wx:if="{{activity.order_id && activity.order_status == 1}}">
+          <!-- 下单已付款  project_style 1 单校区-->
+          <block wx:if="{{activity.order_id && activity.order_status == 1 && activity.project_style==1}}">
             <view class="btn redirect redirect1 flex">
               <form @submit="goOrderDetail" report-submit="true">
                 <button  formType="submit">查看订单 </button>
@@ -482,7 +482,7 @@
         <!-- 团购 和 团购/直接购买 -->
         <view class="ft" wx:if="{{activity.project_type == 2  || (activity.project_type == 3&&(activity.order_type == 2||activity.order_type == null)) }}">
           <!-- 下单并且已购买 -->
-          <view wx:if="{{selfInUsers && selfStatus == 1}}">
+          <view wx:if="{{selfInUsers && selfStatus == 1 && activity.project_style == 1}}">
             <!-- 满团 -->
             <view class="btns btns1 flex"  wx:if="{{activity.project_group_num == activity.project_group_user.length }}">
               <view class="btn redirect redirect1 flex">
@@ -498,7 +498,7 @@
             </view>
             
             <!-- 团未满 -->
-            <view wx:elif="{{activity.project_group_num > activity.project_group_user.length}}">
+            <view wx:elif="{{activity.project_group_num > activity.project_group_user.length  && activity.project_style == 1}}">
               <!-- 倒计时 -->
               <!-- <view class="btns  flex" wx:if="{{ActivityStatus == 0 && countDown > 0}}"> -->
               <view class="btns  flex" wx:if="{{ActivityStatus == 0 }}">
@@ -607,7 +607,7 @@
     <!-- 活动已结束按钮 -->
     <view class="btns  flex" wx:if="{{activity.project_signup_end_time*1000 < nowTime && activity.order_status != 1 || activity.published_time==0}}">
       <view class="btn redirect group-over">
-        <text>活动已结束</text>
+        <text>活动已结束{{activity.project_signup_end_time*1000}}--{{activity.order_status}}--{{activity.published_time}}</text>
       </view>
     </view>
     <!-- 支付 -->
@@ -702,13 +702,7 @@
     computed = {}
 
     methods = {
-      /* see(){
-        let arr = ['http://caihong.ucong.net/democode.jpg']
-        wx.previewImage({
-          urls:arr,
-          current:'http://caihong.ucong.net/democode.jpg'
-        })
-      }, */
+      
       // 返回首页
       goIndex(){
         console.log(123)
@@ -754,8 +748,10 @@
                         encrypted_data:res.detail.encryptedData,
                         iv:res.detail.iv,
                         activityId:this.activityId ,
+                        activityProjectStyle:this.activity.project_style,
                         groupInviterId:this.groupInviterId,
-                        buyPrice: price
+                        buyPrice: price,
+                        activityTitle: this.activity.project_title
                       })
                         
                   })
@@ -763,10 +759,21 @@
             }
             })
           }else{
-            this.buyPrice = price;
-            this.showPay = true;
-            this.hidePay = false;
-            this.$apply();
+            if(this.activity.project_style == 1){
+              this.buyPrice = price;
+              this.showPay = true;
+              this.hidePay = false;
+              this.$apply();
+            }else{
+              this.$navigate('/pages/select-school',{
+                activityId:this.activityId ,
+                order_id:this.order_id,
+                buyPrice:this.activity.project_price,
+                activityTitle:this.activity.project_title,
+                // activityWxReplyText:this.activity.project_wx_reply_text,
+              })
+            }
+            
           }
           // this.buyPrice = price;
           // this.showPay = true;
@@ -850,7 +857,11 @@
                 }
                 that.activity.order_status = 1;
                 that.$apply();
-                that.$navigate('/pages/launch-group',{activityInfo:JSON.stringify(that.activity),projectGroupNum:that.activity.project_group_num});
+                if(that.activity.project_style == 1){
+                  that.$navigate('/pages/launch-group',{activityInfo:JSON.stringify(that.activity),projectGroupNum:that.activity.project_group_num});
+                }else{
+                  //that.$navigate('/pages/',{activityInfo:JSON.stringify(that.activity),projectGroupNum:that.activity.project_group_num});
+                }
               }
               that.showPay = false;
               that.hidePay = true;
@@ -901,7 +912,11 @@
                         //支付成功 order_status 为 1 
                         that.activity.order_status = 1;
                         that.$apply();
-                        that.$navigate('/pages/launch-group',{activityInfo:JSON.stringify(that.activity),projectGroupNum:that.activity.project_group_num});
+                        if(that.activity.project_style == 1){
+                          that.$navigate('/pages/launch-group',{activityInfo:JSON.stringify(that.activity),projectGroupNum:that.activity.project_group_num});
+                        }else{
+                          that.$navigate('/pages/pay-success-school',{activityInfo:JSON.stringify(that.activity),projectGroupNum:that.activity.project_group_num});
+                        }
                       }
                     }
                   })
@@ -1146,8 +1161,14 @@
     onLoad(params) {
       console.log(params)
       if(params.from == 'login'){
-        this.showPay = true;
-        this.hidePay = false;
+        // 多校区不显示
+        if(params.activityProjectStyle == '2'){
+          // this.$
+        }else{
+          this.showPay = true;
+          this.hidePay = false;
+        }
+        
         
       }else{
         this.showPay = false;
@@ -1189,14 +1210,9 @@
          console.log('ActivityStatus-load:'+this.ActivityStatus)
       }
       this.activity = {};
-     
-      
       // console.log(this.ActivityStatus)
       this.nowTime = new Date().getTime();
       this.$apply();
-      
-      
-      
     }
     onShow(){
 

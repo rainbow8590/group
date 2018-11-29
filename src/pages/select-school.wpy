@@ -1,0 +1,466 @@
+<style lang="less">
+  @import '../util/public.less';
+  page{
+    height: 100%;
+  }
+  .select-title{
+    width: 100%;
+    padding: 0 40rpx;
+    box-sizing: border-box;
+    font-size: 28rpx;
+    color: #888;
+    flex-direction: column;
+    line-height: 66rpx;
+    padding-bottom: 20rpx;
+    border-bottom: 1px solid #ebebeb;
+    .title{
+      font-size: 40rpx;
+      color: #333;
+    }
+    .price{
+      font-size: 40rpx;
+      color: #F55858;
+    }
+  }
+  .selects{
+    width: 100%;
+    padding: 0 30rpx;
+    flex: 1;
+    box-sizing: border-box;
+    overflow-y: scroll;
+    .select-item{
+      width: 100%;
+      .item-title{
+        padding: 24rpx 0;
+        font-size: 32rpx;
+      }
+      .item-content{
+        flex-wrap: wrap;
+        button{
+          margin-left: 0;
+          margin-right: 30rpx;
+          line-height: 56rpx;
+          background: #F5F5F5;
+          border: 2rpx solid #F5F5F5;
+          border-radius: 8rpx;
+          color: #666;
+          padding: 0 20rpx;
+          font-size: 28rpx;
+          margin-bottom: 30rpx;
+          &.active{
+            background: #EBF5ED;
+            border: 2rpx solid #6ABD79;
+            color: #6ABD79;
+          }
+          &.disabledClass{
+            background: #eee;
+            border: 2rpx solid #eee;
+            color: #aaa;
+          }
+        }
+      }
+    }
+  }
+  .btn-wrap{
+    // position: fixed;
+    // left: 0;
+    // bottom: 0;
+    width: 100%;
+    height: 128rpx;
+    box-shadow: 0 8rpx 20rpx rgba(0,0,0,.6);
+    background: #fff;
+    button{
+      width: 600rpx;
+      height: 88rpx;
+      margin-top: 20rpx;
+      background: #6ABD79;
+      // box-shadow: 0 4rpx 6rpx 0 rgba(108,202,109,0.30);
+      border-radius: 9rpx;
+      color: #fff;
+      font-size: 34rpx;
+    }
+  }
+</style>
+<template>
+  <view class="container" >
+    {{test.aa}}
+    <view class="select-title flex">
+      <text class="title">{{activityTitle}}</text>
+      <text class="price">¥{{buyPrice}}</text>
+      <text wx:if="{{!project_theme_id && !school_area_id && !time_part_id}}">请选择主题，校区，时段</text>
+      <text wx:else>已选择 {{project_theme_value}} {{school_area_value}} {{time_part_value}}</text>
+    </view>
+    <view class="selects">
+      <repeat for="{{select.list}}"  key="index" index="index" item="lists">
+        <view class="select-item">
+          <view class="item-title">{{lists.name == 'project_theme'? '主题':(lists.name == 'school_area'? '校区':'时段')}}</view>
+          <view class="item-content flex">
+            <repeat for="{{lists.list}}"  key="index" index="listIndex" item="item">
+              <button class="{{item.status == 'choose'?'active':''}} {{item.status == 'disabled'?'disabledClass':''}}" 
+                data-father="{{lists.name}}" 
+                data-fatherindex="{{index}}"  
+                data-listindex="{{listIndex}}"  
+                data-id="{{item.id}}"
+                data-value="{{item.title}}"
+                @tap="{{item.disabled ? '':'addClassOrRemoveClass'}}">
+                {{item.title}}
+              </button>
+            </repeat>
+          </view>
+        </view>
+      </repeat>
+      <!-- <view class="select-item">
+        <view class="item-title">校区</view>
+        <view class="item-content flex">
+          <repeat for="{{select.school_area}}"  key="index" index="index" item="item">
+            <button class="{{item.status == 'choose'?'active':''}} {{item.status == 'disabled'?'disabledClass':''}}" 
+              data-father="school_area" 
+              data-index="{{index}}" 
+              data-id="{{item.id}}"
+              data-value="{{item.title}}"
+              @tap="{{item.disabled ? '':'addClassOrRemoveClass'}}">
+            {{item.title}}
+            </button>
+          </repeat>
+        </view>
+      </view>
+      <view class="select-item">
+        <view class="item-title">时段</view>
+        <view class="item-content flex">
+          <repeat for="{{select.time_part}}"  key="index" index="index" item="item">
+            <button class="{{item.status == 'choose'?'active':''}} {{item.status == 'disabled'?'disabledClass':''}}" 
+              data-father="time_part" 
+              data-index="{{index}}" 
+              data-id="{{item.id}}"
+              data-value="{{item.title}}"
+              @tap="{{item.disabled ? '':'addClassOrRemoveClass'}}">
+            {{item.title}}
+            </button>
+          </repeat>
+        </view>
+      </view> -->
+    </view>
+    <view class="btn-wrap">
+      <!-- select.order_status == 1 已付款   -1 下单未付款和未购买 -->
+      <button @tap="goPaySuccessSchool" wx:if="{{select.order_status == 1}}" >已购买, 查看订单</button>
+      <button @tap="pay" wx:if="{{select.order_status == -1||select.order_status == 2}}" disabled="{{isDisabled}}">微信支付 </button>
+    </view>
+    
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import 'wepy-async-function'
+  import wxRequest from '../util/request'
+  
+  export default class Login extends wepy.page {
+    config = {
+      navigationBarTitleText: '报名活动',
+      // disableScroll: true
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+      isDisabled: true,
+      wh:null,
+      activityTitle:'',
+      buyPrice:0,
+      pixelRatio: 2,
+      active: false,
+      project_theme_id:'',
+      school_area_id:'',
+      time_part_id:'',
+      project_theme_value:'',
+      school_area_value:'',
+      time_part_value:'',
+      select:{
+        
+      },
+      target:{
+        // zhuti:[{active: false,value:'小升初'},{active: false,value:'中考政策'}],
+        // schools:[{active: false,value:'海淀黄庄'},{active: false,value:'中关村'}],
+        // times:[{active: false,value:'11月11日 上午 10:00～12:00'}]
+      },
+      // test:{
+      //   aa: '123'
+      // }
+    }
+
+    computed = {
+      
+    }
+
+    methods = {
+      addClassOrRemoveClass(e){
+        // console.log(e)
+        // console.log(this.select.list)
+        // console.log(e.currentTarget.dataset.fatherindex)
+        let father = this.select.list[e.currentTarget.dataset.fatherindex].list;
+        let target = this.select.list[e.currentTarget.dataset.fatherindex].list[e.currentTarget.dataset.listindex]
+       
+        //console.log(target)
+        if(target.status == 'disabled'){
+          return;
+        } 
+        
+        if(target.status == 'choose'){
+          if(e.currentTarget.dataset.father == 'project_theme'){
+            this.project_theme_id = ''
+            this.project_theme_value = ''
+          }else if(e.currentTarget.dataset.father == 'school_area'){
+            this.school_area_id = ''
+            this.school_area_value = ''
+          }else if(e.currentTarget.dataset.father == 'time_part'){
+            this.time_part_id = ''
+            this.time_part_value = ''
+          }
+        }else{
+          if(e.currentTarget.dataset.father == 'project_theme'){
+            this.project_theme_id = e.currentTarget.dataset.id
+            this.project_theme_value = e.currentTarget.dataset.value
+          }else if(e.currentTarget.dataset.father == 'school_area'){
+            this.school_area_id = e.currentTarget.dataset.id
+            this.school_area_value = e.currentTarget.dataset.value
+          }else if(e.currentTarget.dataset.father == 'time_part'){
+            this.time_part_id = e.currentTarget.dataset.id
+            this.time_part_value = e.currentTarget.dataset.value
+          }
+        }
+        console.log()
+        if(this.project_theme_value && this.school_area_value && this.time_part_value){
+          this.isDisabled = false
+        }else{
+          this.isDisabled = true;
+          // return;
+        }
+        
+        this.getSelect(()=>{
+          
+          // 同级只能单选
+          for(let i = 0; i < father.length; i++){
+            if(father[i].status == 'choose'){
+              father[i].status = 'enabled';
+            }
+          }
+          
+          target.status = 'choose';
+          this.setData('select', this.select);
+        })
+
+        // this.$$phase = true;
+      },
+      goPaySuccessSchool(){
+        this.$navigate('/pages/pay-success-school',{orderId: this.select.order_id})
+      },
+      
+      // 微信支付成功
+      pay(){
+        let that = this;
+        // let users = this.activity.project_group_user;
+        let params = {
+          method:'post',
+          data:{
+            project_id:this.order_project_id,
+            buy_type:1,
+            group_inviter_id: 0
+          }
+        }
+        if(this.order_project_id == 0) {
+          wx.showToast({
+            title:'请选择属性',
+            icon: 'none'
+          })
+          return;
+        }
+        console.log('that.order_project_id')
+        console.log(that.order_project_id)
+        // that.$navigate('/pages/pay-success-school',{project_id:that.order_project_id});
+        // return;
+        wxRequest(params,'/order/create').then(res=>{
+          console.log(res)
+          if(res.data.code == 1){
+            if(that.buyPrice == '0.00'){
+              that.$navigate('/pages/pay-success-school',{orderId:res.data.data.order.id});
+            }else{
+              var payModel = res.data.data.order;
+              wx.requestPayment({
+                'timeStamp': payModel.timeStamp,
+                'nonceStr': payModel.nonceStr,
+                'package': payModel.package,
+                'signType':  payModel.signType,
+                'paySign': payModel.paySign,
+                'success': function (r) {
+                  console.log(r)
+                  // that.$parent.globalData.isBuy = true
+                  wx.showToast({
+                    title: '支付成功',
+                    icon: 'success',
+                    duration: 2000,
+                    mask: true,
+                    success: re =>{  
+                      console.log(res.data.data.order.id)
+                      // console.log(that.order_project_id)
+                        // that.activity.order_status = 1;
+                        // that.$apply();
+                        that.$navigate('/pages/pay-success-school',{orderId:res.data.data.order.id});
+                    }
+                  })
+                },
+                'fail': function (fail) {
+                  console.log(fail)
+                  // that.show = false;
+                  // that.hide = false;
+                  // that.showPay = false;
+                  // that.hidePay = false;
+                  // that.showFriend = false;
+                  // that.hideFriend = false;
+                  // that.selfInUsers = true;
+                  // that.selfStatus = 0;
+                  // that.getActivity();
+                  // that.$apply();
+                }
+              })
+              }
+            
+          }
+        })
+      }
+    }
+    events = {
+    }
+    selectResult(e){
+        console.log(e)
+        console.log(this.select)
+        let father = this.select[e.currentTarget.dataset.father];
+        let target = this.select[e.currentTarget.dataset.father][e.currentTarget.dataset.index]
+        if(target.status == 'disabled') return;
+        // 同级只能单选
+        for(let i = 0; i < father.length; i++){
+            father[i].status = 'enabled';
+        }
+        target.status = 'choose';
+  
+        this.setData('select', this.select);
+
+        /* console.log(this.select)
+        var str = JSON.stringify(this.target)
+      
+        for(let f in this.select){
+          var t = this.select[f];
+          if(f == e.currentTarget.dataset.father){
+            for(let k = 0; k < t.length; k++){
+              if(!t[k].disabled){
+                t[k].disabled = false;
+                // t[k].active = false;
+              }else{
+                t[k].disabled = true;
+              }
+            }
+          }else{
+            
+            for(let k = 0; k < t.length; k++){
+              if(str.indexOf(t[k].title)!= -1 && t[k].disabled == false){
+                t[k].disabled = false;
+              }else{
+                console.log(11)
+                t[k].disabled = true;
+              }
+            }
+          } 
+        }
+        console.log(this.select) */
+        // this.setData('select', this.select);
+    }
+    getSelect(callback){
+      
+      let params = {
+        method:'post',
+        data:{
+          id: this.activityId,
+          project_theme_id: this.project_theme_id,
+          school_area_id: this.school_area_id,
+          time_part_id: this.time_part_id,
+          order_id: this.order_id
+        }
+      }
+      wxRequest(params,'/project/filter/school').then(res => {
+        console.log(res)
+        // this.select = res.data.data;
+        for(let key  in res.data.data){
+          for(var i = 0; i < res.data.data[key].length;i++){
+            res.data.data[key][i].active = false
+            res.data.data[key][i].disabled = false
+          }
+        }
+        this.order_project_id = res.data.data.order_project_id;
+        this.select  = res.data.data;
+        callback()
+        // console.log(this.project_theme_id =='' && this.school_area_id=='' && this.time_part_id=='')
+        // if(this.project_theme_id =='' && this.school_area_id=='' && this.time_part_id==''){
+        //   this.select  = res.data.data;
+        //   console.log(1)
+        // }else{
+        //   this.target = res.data.data;
+        //   console.log(2)
+        //   console.log(this.select)
+        //   console.log(this.target)
+        //   console.log(3)
+          // this.selectResult(e)
+        // }
+        this.$apply();
+      })
+    }
+    
+    onLoad(param) {
+      console.log(param)
+      this.activityId = param.activityId;
+      this.order_id = param.order_id;
+      this.activityTitle = param.activityTitle;
+      this.buyPrice = param.buyPrice;
+      this.activityWxReplyText = param.activityWxReplyText;
+      let that = this;
+      
+      wx.getSystemInfo({
+        success (res) {
+          that.setData({wH: res.windowHeight,pixelRatio: res.pixelRatio})
+        }
+      })
+      
+    }
+    onShow(){
+      this.select = []
+      this.project_theme_id = '';
+      this.school_area_id = '';
+      this.time_part_id = '';
+      this.project_theme_value = '';
+      this.school_area_value = '';
+      this.time_part_value = '';
+      this.isDisabled = true;
+      this.getSelect(()=>{});
+    }
+    // onHide(){
+    //   this.project_theme_id = '';
+    //   this.school_area_id = '';
+    //   this.time_part_id = '';
+    //   this.project_theme_value = '';
+    //   this.school_area_value = '';
+    //   this.time_part_value = '';
+    //   this.select = []
+    // }
+    
+    // onUnload(){
+    //   this.project_theme_id = '';
+    //   this.school_area_id = '';
+    //   this.time_part_id = '';
+    //   this.project_theme_value = '';
+    //   this.school_area_value = '';
+    //   this.time_part_value = '';
+    //   this.select = []
+    // }
+  }
+</script>
