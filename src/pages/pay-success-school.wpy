@@ -171,7 +171,7 @@
     </view>
     <view class="buy-infos flex">
       <text class="buy-title">{{activityInfo.project_title}}</text>
-      <text>主题: {{activityInfo._extra.project_theme}}</text>
+      <text wx:if="{{activityInfo._extra.project_theme}}">主题: {{activityInfo._extra.project_theme}}</text>
       <view><text>校区: {{activityInfo._extra.school_name}}</text> <text class="see-map" @tap="lookMap">查看地图 <text class="arrow"></text></text></view>
     </view>
     <view class="lesson-state lesson-state1 lesson-state2">
@@ -196,16 +196,6 @@
       <view class="map {{showMap?'easeIn':'easeOut'}}">
         <view class="map-title">{{activityInfo._extra.school_name}}</view>
         <view class="map-title-des">{{activityInfo._extra.school_address}}</view>
-        <!-- <map id="myMap" 
-        
-        longitude="{{location.longitude}}" 
-        latitude="{{location.latitude}}" 
-        scale="18"   
-        markers="{{markers}}"
-        bindcontroltap="code"> </map> -->
-
-        <!-- longitude="{{markers[0].longitude}}" 
-        latitude="{{markers[0].latitude}}"  -->
         <map id="map" 
         scale="14" 
         longitude="{{longitude}}" 
@@ -407,10 +397,17 @@
       //   }
       // })
     }
+    onHide(){
+      this.show = false;
+      this.hide = false;
+    }
     onUnload(){
       // console.log('ims')
       this.showMap = false;
       this.hideMap = false;
+
+      this.show = false;
+      this.hide = false;
       this.$apply();
       
     }

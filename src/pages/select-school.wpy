@@ -87,13 +87,16 @@
     <view class="select-title flex">
       <text class="title">{{activityTitle}}</text>
       <text class="price">¥{{buyPrice}}</text>
-      <text wx:if="{{!project_theme_id && !school_area_id && !time_part_id}}">请选择主题，校区，时段</text>
+      <text wx:if="{{!project_theme_id && !school_area_id && !time_part_id}}">请选择<text wx:if="{{select.list[0].list.length > 0}}">主题，</text>校区，时段</text>
       <text wx:else>已选择 {{project_theme_value}} {{school_area_value}} {{time_part_value}}</text>
     </view>
     <view class="selects">
       <repeat for="{{select.list}}"  key="index" index="index" item="lists">
         <view class="select-item">
-          <view class="item-title">{{lists.name == 'project_theme'? '主题':(lists.name == 'school_area'? '校区':'时段')}}</view>
+          <view class="item-title">
+            <text wx:if="{{lists.name != 'project_theme' || (lists.name == 'project_theme' && lists.list.length> 0)}}">{{lists.name == 'project_theme'? '主题':(lists.name == 'school_area'? '校区':'时段')}}</text>
+            
+            </view>
           <view class="item-content flex">
             <repeat for="{{lists.list}}"  key="index" index="listIndex" item="item">
               <button class="{{item.status == 'choose'?'active':''}} {{item.status == 'disabled'?'disabledClass':''}}" 
@@ -231,12 +234,19 @@
             this.time_part_value = e.currentTarget.dataset.value
           }
         }
-        console.log()
-        if(this.project_theme_value && this.school_area_value && this.time_part_value){
-          this.isDisabled = false
+
+        if(this.select.list[0].list.length){
+          if(this.project_theme_value && this.school_area_value && this.time_part_value){
+            this.isDisabled = false
+          }else{
+            this.isDisabled = true;
+          }
         }else{
-          this.isDisabled = true;
-          // return;
+          if(this.school_area_value && this.time_part_value){
+            this.isDisabled = false
+          }else{
+            this.isDisabled = true;
+          }
         }
         
         this.getSelect(()=>{

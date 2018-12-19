@@ -379,7 +379,7 @@
         <button class="look-order" formType="submit">查看订单 > </button>
       </form> -->
     </view>
-  <!-- {{activity.published_time}}~~0000 -->
+    <!-- {{activity.published_time}}~~0000 -->
     <image src="{{activity.project_content_image}}" mode="widthFix" />
     <view wx:if="{{activity.published_time!= 0&& (activity.project_signup_end_time*1000 > nowTime || (activity.project_signup_end_time*1000 < nowTime &&activity.order_status == 1 ))}}">
       <view wx:if="{{!ActicityUser}}">
@@ -1014,7 +1014,10 @@
     }
     // 获取活动详情数据
     getActivity(){
+      this.ajaxOver = false;
+      this.activity = {}
       this.selfInUsers = false;
+      this.$apply();
       let params = {
         method:'post',
         data:{id: this.activityId, group_inviter_id: this.groupInviterId}
@@ -1159,6 +1162,7 @@
       }
     }
     onLoad(params) {
+      console.log(111111111111111111111111111111)
       console.log(params)
       if(params.from == 'login'){
         // 多校区不显示
@@ -1187,7 +1191,7 @@
       // this.selfSecs = 0;
 
  
-
+      // this.activity = {}
       this.ActicityUser = wx.getStorageSync('ActicityUser');
       
   
@@ -1216,7 +1220,8 @@
     }
     onShow(){
 
-      console.log(this.ActicityUser)
+      console.log('onShow')
+      console.log(this.activity)
       this.ActicityUser = wx.getStorageSync('ActicityUser');
       this.getActivity();
       // console.log(this.ActivityStatus)
@@ -1241,6 +1246,7 @@
     }
     onUnload(){
       console.log('onUnload')
+      this.activity = {};
       this.show = false;
       this.hide = false;
       this.showPay = false;
@@ -1253,8 +1259,10 @@
       this.selfHours = 0;
       this.selfMins = 0;
       this.selfSecs = 0;
+      this.ajaxOver = false;
       clearInterval(this.timer)
       clearInterval(this.timer1)
+      this.$apply();
       // clearInterval(that.timer2)
       // console.log('2232323')
     }
