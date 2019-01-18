@@ -65,12 +65,16 @@
 </style>
 <template>
   <view class="container">
+    <skeleton selector="skeleton"
+          loading="spin"
+          bgcolor="#FFF"
+          wx:if="{{showSkeleton}}"></skeleton>
     <!-- 订单页面 -->
-    <view class="orders">
+    <view class="orders skeleton">
       <view class="user flex">
         <view wx:if="{{ActicityUser}}" class="userinfo flex">
-          <view class="avtor"><image src="{{ActicityUser.avatar_url}}" /></view>
-          <text>{{ActicityUser.nick_name}}</text>
+          <view class="avtor skeleton-radius" ><image src="{{ActicityUser.avatar_url}}" /></view>
+          <text class="skeleton-rect">{{ActicityUser.nick_name}}</text>
         </view>
         <button wx:if="{{!ActicityUser}}"  open-type="getUserInfo" @getuserinfo="goLogin" formType="submit">登录</button>
       </view>
@@ -102,6 +106,8 @@
   import wepy from 'wepy'
   import wxRequest from '../util/request'
   import OrderList from '../components/orderList'
+  import Skeleton from '../components/skeleton'
+
   import {timestampToTime} from '../util/public'
   
   export default class Order extends wepy.page {
@@ -110,7 +116,8 @@
       // disableScroll: true
     }
     components = {
-      'order-list': OrderList
+      'order-list': OrderList,
+      'skeleton': Skeleton
     }
 
     mixins = []
@@ -118,7 +125,8 @@
     data = {
       // token: wx.getStorageSync('token'),
       ActicityUser: wx.getStorageSync('user'),
-      orderList:[]
+      orderList:[],
+      showSkeleton: true
     }
 
     computed = {}
@@ -249,7 +257,7 @@
     }
     
     onLoad(params) {
-      // console.log(34434)
+      console.log(34434)
        
       // this.token =  wx.getStorageSync('token');
       //首次进入订单页面, 先判断是否登录, 登录了再请求订单列表
@@ -258,9 +266,13 @@
       //   this.getOrderList();
       // }
      
+    
     }
     
     onShow(){
+      const that = this;
+    
+    
       // console.log(this.$parent.globalData.already)
       //因为switch不执行onLoad, 需要在onShow中再判断一次 
       // onLoad没有登录,获取onShow时的登录状态,

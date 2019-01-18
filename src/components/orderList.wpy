@@ -34,8 +34,8 @@
     <form @submit="goOrderDetail('{{index}}')" report-submit="true">
       <view class="order-wrap flex" >
         <view class="order-info">
-          <view class="order-title">{{item.project_title}}</view>
-          <view class="order-time">{{item.create_time}}</view>
+          <view class="order-title skeleton-rect">{{item.project_title}}</view>
+          <view class="order-time skeleton-rect">{{item.create_time}}</view>
         </view>
         <view class="order-state flex">
           <text>{{item.order_state }}</text> <text class="order-arrow"></text></view>

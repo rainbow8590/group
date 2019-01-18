@@ -75,11 +75,13 @@
   
 </style>
 <template>
+  
   <view class="container" style="height:{{windowHeight}}px">
+    
     <!-- <web-view src="https://itunes.apple.com/cn/app/id1166474372?mt=8"></web-view> -->
     <!-- <button @tap="goGroupDetail">11223</button> -->
     <repeat for="{{activityList}}" key="index" index="index" item="item">
-      <index-list :item="item"></index-list>
+      <index-list :item="item" class="skeleton"></index-list>
     </repeat>
   </view>
 </template>
@@ -90,7 +92,7 @@
   // import API from '../mixins/data'
   import wxRequest from '../util/request'
   import IndexList from '../components/indexList'
-
+  
   
   export default class Index extends wepy.page {
     config = {
@@ -98,7 +100,8 @@
       // disableScroll: true
     }
     components = {
-      'index-list': IndexList
+      'index-list': IndexList,
+      
     }
 
     mixins = []

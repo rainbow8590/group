@@ -1,0 +1,100 @@
+<style lang="less">
+
+</style>
+<template>
+ <!--<canvas canvas-id="skeleton" disable-scroll="true"></canvas>-->
+  <view style="width: {{systemInfoWidth}}px; height: {{systemInfoHeight}}px; background-color: {{bgcolor}}; position: absolute; left:0; top:0; z-index:9998; overflow: hidden;">
+    <view wx:for="{{skeletonRectLists}}" wx:key="{{index}}" class="{{loading == 'chiaroscuro' ? 'chiaroscuro' : ''}}" style="width: {{item.width}}px; height: {{item.height}}px; background-color: rgb(194, 207, 214); position: absolute; left: {{item.left}}px; top: {{item.top}}px">
+    </view>
+    <view wx:for="{{skeletonCircleLists}}" wx:key="{{index}}" class="{{loading == 'chiaroscuro' ? 'chiaroscuro' : ''}}" style="width: {{item.width}}px; height: {{item.height}}px; background-color: rgb(194, 207, 214); border-radius: {{item.width}}px; position: absolute; left: {{item.left}}px; top: {{item.top}}px">
+    </view>
+    <view class="spinbox" wx:if="{{loading == 'spin'}}">
+      <view class="spin"></view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+
+  export default class Skeleton extends wepy.component {
+    data = {
+      loadingAni: ['spin', 'chiaroscuro'],
+       //默认的首屏宽高，防止内容闪现
+      systemInfoWidth: wx.getSystemInfoSync().windowWidth,
+      systemInfoHeight: wx.getSystemInfoSync().windowHeight,
+      skeletonRectLists: [],
+      skeletonCircleLists: []
+    }
+    props = {
+      bgcolor: {
+        type: String,
+        value: '#FFF'
+      },
+      selector: {
+        type: String,
+        value: 'skeleton'
+      },
+      loading: {
+        type: String,
+        value: 'spin'
+		  }
+    }
+    
+
+    events = {
+      rectHandle: () => {
+        const that = this;
+        //绘制不带样式的节点
+        wx.createSelectorQuery().selectAll('.skeleton-rect').boundingClientRect().exec(function(res){
+          that.skeletonRectLists = res[0];
+          console.log(34444444444444444)
+          console.log(res)
+        });
+
+      },
+      radiusHandle: () => {
+        const that = this;
+        console.log(wx.createSelectorQuery().selectAll(`.${this.selector}-radius`))
+        wx.createSelectorQuery().selectAll('.skeleton-radius').boundingClientRect().exec(function(res){
+          console.log(res)
+          that.skeletonCircleLists = res[0]
+        });
+      }
+    }
+    methods = {
+      
+    }
+
+    
+    
+  
+    onLoad () {
+      const that = this;
+      // this.attached();
+      this.loading = this.loadingAni.includes(this.loading) ? this.loading : 'spin'
+
+      //绘制背景
+      // console.log(wx.createSelectorQuery().selectAll(`.${this.selector}`))
+      wx.createSelectorQuery().selectAll(`.${this.selector}`).boundingClientRect().exec(function(res){
+        console.log(res)
+        that.systemInfoHeight = res[0][0].height + res[0][0].top
+       
+      });
+      
+      
+      //绘制矩形
+      //this.rectHandle();
+
+      //绘制圆形
+      //this.radiusHandle();
+    }
+
+  
+
+
+
+
+
+
+  }
+</script>
