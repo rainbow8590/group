@@ -65,10 +65,10 @@
 </style>
 <template>
   <view class="container">
-    <skeleton selector="skeleton"
+    <!-- <skeleton selector="skeleton"
           loading="spin"
           bgcolor="#FFF"
-          wx:if="{{showSkeleton}}"></skeleton>
+          wx:if="{{showSkeleton}}"></skeleton> -->
     <!-- 订单页面 -->
     <view class="orders skeleton">
       <view class="user flex">
@@ -106,7 +106,7 @@
   import wepy from 'wepy'
   import wxRequest from '../util/request'
   import OrderList from '../components/orderList'
-  import Skeleton from '../components/skeleton'
+  // import Skeleton from '../components/skeleton'
 
   import {timestampToTime} from '../util/public'
   
@@ -117,7 +117,7 @@
     }
     components = {
       'order-list': OrderList,
-      'skeleton': Skeleton
+      // 'skeleton': Skeleton
     }
 
     mixins = []

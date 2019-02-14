@@ -105,8 +105,9 @@ export default class extends wepy.app {
     if(isCan){
       const updateManager = wx.getUpdateManager()
       updateManager.onCheckForUpdate(function (res) {
+        console.log(res)
         // 请求完新版本信息的回调
-        console.log(res.hasUpdate)
+        // console.log(res.hasUpdate)
         if(res.hasUpdate){
           wx.showToast({
             title: '提示',

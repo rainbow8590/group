@@ -607,7 +607,8 @@
     <!-- 活动已结束按钮 -->
     <view class="btns  flex" wx:if="{{activity.project_signup_end_time*1000 < nowTime && activity.order_status != 1 || activity.published_time==0}}">
       <view class="btn redirect group-over">
-        <text>活动已结束{{activity.project_signup_end_time*1000}}--{{activity.order_status}}--{{activity.published_time}}</text>
+        <!-- <text>活动已结束{{activity.project_signup_end_time*1000}}--{{activity.order_status}}--{{activity.published_time}}</text> -->
+        <text>活动已结束</text>
       </view>
     </view>
     <!-- 支付 -->
