@@ -43,6 +43,7 @@ export default class extends wepy.app {
       "pages/launch-group", // 发起拼团成功页面
       "pages/group-detail", // 拼团详情
       "pages/order", // 订单列表
+      "pages/editInfo", // 修改资料
       "pages/login-phone", // 手机验证码登录
       "pages/login",
       "pages/order-detail", // 订单详情
@@ -150,10 +151,21 @@ export default class extends wepy.app {
         }
       })
     }
+
+    this.user = wx.getStorageSync('ActicityUser');
+    if(this.user &&(this.user.is_perfect!= 0 && this.user.is_perfect != 1)){
+      wx.clearStorageSync()
+    }
   }
   onHide(){
     this.isBuy = false //是否买了商品,用与订单列表请求
     this.already = 0 //未登录时0, 登录1
+  }
+  onShow(){
+    this.user = wx.getStorageSync('ActicityUser');
+    if(this.user &&(this.user.is_perfect!= 0 && this.user.is_perfect != 1)){
+      wx.clearStorageSync()
+    }
   }
 
   // sleep (s) {

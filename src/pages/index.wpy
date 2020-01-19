@@ -100,7 +100,7 @@
       <text>正在筹备新的活动，晚点再来看吧</text>
     </view>
     <repeat for="{{activityList}}" key="index" index="index" item="item">
-      <index-list :item="item" class="skeleton"></index-list>
+      <index-list :item="item" ></index-list>
     </repeat>
   </view>
 </template>
@@ -172,7 +172,15 @@
         // console.log(id)
         // 将formId绑定到活动列表页面. 点击就获取formId, 然后后台存储备用
         // console.log(e.detail.formId)
-        this.$navigate('/pages/group-detail',{activityId:id,form_id:e.detail.formId})
+        // 判断用户是否被拉黑, 若拉黑 直接提示, 没有拉黑则在下个页面进行拉黑判断  
+        // status： 0拉黑；1正常
+        // if(this.ActicityUser.status){
+        //   wx.showToast({
+
+        //   })
+        // }else{
+          this.$navigate('/pages/group-detail',{activityId:id,form_id:e.detail.formId})
+        
         // this.$navigate('/pages/discount')
       },
     }
@@ -233,8 +241,12 @@
       // this.timeD()
     }
     onShow(){
+      if(!this.ActicityUser){
+        this.ActicityUser =  wx.getStorageSync('ActicityUser');
+      }
       // 获取活动列表
       this.getActivityList();
+      
      
     }
  

@@ -1,0 +1,441 @@
+<style lang="less">
+	@import '../util/public.less';
+	.wrap{
+		font-size: 32rpx;
+	}
+  .perfect-infor-top {
+		margin: 64rpx 40rpx 0 40rpx;
+		padding-bottom: 72rpx;
+		border-bottom: 1rpx solid #EBEBEB;
+	}
+
+	.perfect-infor-bottom {
+		margin: 0 40rpx;
+	}
+
+	.justifyContent {
+		justify-content: space-between;
+		margin-top: 72rpx;
+	}
+	.head-portrait{
+		align-items: center;
+	}
+	.head-portrait view {
+		width: 118rpx;
+		height: 118rpx;
+		border-radius: 50%;
+		border: 2rpx solid #6fd46b;
+		overflow: hidden;
+	}
+
+	.head-portrait view image {
+		width: 100%;
+		height: 100%;
+	}
+
+	.nickname .font-14 {
+		color: #555;
+	}
+
+	.full-name input {
+		height: 32rpx;
+		color: #555;
+		text-align: right;
+	}
+
+	.full-name .placeholderStyle {
+		font-size: 32rpx;
+		font-family: PingFangSC-Regular;
+		font-weight: 400;
+		color: #BBBBBB;
+	}
+
+	.picker-select .picker {
+		color: #bbbbbb;
+		line-height: 32rpx;
+		margin-right: 18rpx;
+	} 
+
+	.picker-select .triangle {
+		width: 16rpx;
+		height: 32rpx;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.triangle view {
+		width: 32rpx;
+		height: 32rpx;
+		border-right: 1rpx solid #BBBBBB;
+		border-bottom: 1rpx solid #bbbbbb; 
+		transform:rotate(-45deg);
+		position: absolute;
+		left: -26rpx;
+	}
+
+	.justifyContent button {
+		width: 221rpx;
+		height: 64rpx;
+		border-radius: 32rpx;
+		background-color: #5FBE5B;
+		padding: 0;
+		margin: 0;
+		line-height:64rpx;
+	}
+
+	.justifyContent .textC555{
+		color: #555;
+	}
+
+	.complete-button {
+		width: 600rpx;
+		height: 88rpx;
+		background-color: #5FBE5B;
+		border-radius: 44rpx;
+		font-size: 34rpx;
+		margin-top: 110rpx;
+		margin-bottom: 36rpx;
+		color: #fff;
+	}
+
+	.left{
+		float: left;
+	}
+	.right{
+		float: right;
+	}
+  
+</style>
+<template>
+  <view class="wrap">
+		<!-- 第一部分 -->
+		<view class='perfect-infor-top'>
+			<!-- 头像 -->
+			<view class='justifyContent head-portrait flex'>
+				<text class='ff-PR fw-400 font-16 deepBlackColor'>头像</text>
+				<view>
+					<image src='{{ActicityUser.avatar_url}}'></image>
+				</view>
+			</view>
+			<!-- 昵称 -->
+			<view class='justifyContent nickname flex'>
+				<text class='ff-PR fw-400 font-16 deepBlackColor'>昵称</text>
+				<text class='fw-400 ff-PR font-14' >{{ActicityUser.nick_name}}</text>
+			</view>
+			<!-- 姓名 -->
+			<view class='justifyContent full-name flex'>
+				<text class='ff-PR fw-400 font-16 deepBlackColor'>学生姓名</text>
+				<input 
+					placeholder='请输入姓名' 
+					bindinput="bindKeyInput" 
+					placeholder-class="placeholderStyle" 
+					class='fw-400 ff-PR font-14' 
+					value="{{inputValue}}"
+					maxlength="4"
+				/>
+			</view>
+			<!-- 性别 -->
+			<view class='justifyContent picker-select flex'>
+				<text class='ff-PR fw-400 font-16 deepBlackColor'>性别</text>
+				<view class='select'>
+					<picker @change="bindPickerGender" value="{{indexGE}}" range="{{arrayGender}}">
+						<view class="picker fw-400 ff-PR font-14 left">
+							<text wx:if="{{indexGE===''}}">请选择性别</text>
+							<text class='textC555' wx:else>{{arrayGender[indexGE]}}</text>
+						</view>
+						<view class='triangle right'>
+							<view></view>
+						</view>
+					</picker>
+				</view>
+			</view>
+			<!-- 年级 -->
+			<view class='justifyContent picker-select flex'>
+				<text class='ff-PR fw-400 font-16 deepBlackColor'>年级</text>
+				<view class='select'>
+					<picker @change="bindPickerGrade" value="{{indexGR}}" range="{{arrayGrade}}">
+						<view class="picker fw-400 ff-PR font-14 left">
+							<text wx:if="{{indexGR===''}}">请选择年级</text>
+							<text class='textC555' wx:else>{{arrayGrade[indexGR]}}</text>
+						</view>
+						<view class='triangle right'>
+							<view></view>
+						</view>
+					</picker>
+				</view>
+			</view>
+		</view>
+		<!-- 第二部分 -->
+		<view class='perfect-infor-bottom'>
+			<!-- 地区 -->
+			<view class='justifyContent picker-select flex'>
+				<text class='ff-PR fw-400 font-16 deepBlackColor'>地区</text>
+				<view class='select'>
+					<picker @change="bindPickerArea" value="{{indexAR}}" range="{{arrayArea}}">
+						<view class="picker fw-400 ff-PR font-14 left">
+							<text wx:if="{{indexAR===''}}">请选择地区</text>
+							<text class='textC555' wx:else>{{arrayArea[indexAR]}}</text>
+						</view>
+						<view class='triangle right'>
+							<view></view>
+						</view>
+					</picker>
+				</view>
+			</view>
+			<!-- 手机号 -->
+			<view class='justifyContent flex'>
+				<text class='ff-PR fw-400 font-16 deepBlackColor'>手机号</text>
+				<!-- <text wx:if="{{dataUser.tel!=''}}" class='fw-400 ff-PR font-14' >{{dataUser.tel}}</text> -->
+				<!-- <button wx:if="{{phone==''}}" class='whiteColor font-14 ff-PR fw-400' open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">获取手机号</button> -->
+				<text wx:if="{{ActicityUser.phone!=''}}" class='fw-400 ff-PR font-14' >{{ActicityUser.phone}}</text>
+			</view>
+		</view>
+		<!-- 提交部分 -->
+		<button class='whiteColor fw-500 ff-PM complete-button' @tap='postEditUser' disabled="{{disabled}}">完成</button>
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import wxRequest from '../util/request'
+  import OrderList from '../components/orderList'
+  
+  export default class Order extends wepy.page {
+    config = {
+      navigationBarTitleText: '完善资料',
+    }
+    components = {
+
+    }
+
+    mixins = []
+
+    data = {
+			indexAR:'',
+			indexGE:'',
+			indexGR:'',
+			ActicityUser:{},
+      fromWhere:"",
+			disabled: true,
+			inputValue: null,
+			userInfo: {},
+			phone: "",
+			dataUser: {},
+			arrayGender: ['男', '女'],
+			arrayGrade: ['小班','中班','大班', '一年级', '二年级', '三年级', '四年级', '五年级', '六年级', '初一', '初二', '初三','高一', '高二', '高三'],
+			arrayArea: ['海淀区', '朝阳区', '东城区', '西城区', '丰台区', '石景山区', '昌平区', '大兴区', '通州区', '门头沟区', '房山区', '顺义区', '怀柔区', '平谷区', '密云区', '延庆区', '其他']
+    }
+
+    computed = {}
+
+    methods = {
+      // 姓名
+			bindKeyInput(e) {
+				this.inputValue = e.detail.value
+				this.judgeData()
+			},
+
+			// 性别
+			bindPickerGender(e) {
+				this.indexGE = e.detail.value
+				console.log(this.indexGE)
+				this.judgeData()
+				this.$apply()
+			},
+
+			// 年级
+			bindPickerGrade(e) {
+				this.indexGR = e.detail.value
+				console.log('年级='+(parseInt(this.indexGR)-2) ,this.arrayGrade[this.indexGR])
+				this.judgeData()
+			},
+			// 地区
+			bindPickerArea(e) {
+				this.indexAR = e.detail.value
+			
+				this.judgeData()
+			},
+			
+		
+			// 完善资料提交
+			postEditUser() {
+				// console.log('姓名:'+this.inputValue+' 性别:'+ (parseInt(this.indexGE)+1)+ '年级:' + this.indexGR + '地区:' +this.indexAR)')
+				/* if((this.inputValue== null || this.inputValue=='' || this.inputValue== undefined)  ) {
+					wx.showModal({
+						title:'提示',
+						content:'请完善姓名',
+						success: function(){
+							return;
+						}
+					})
+					return;
+				}else if(this.indexGE == null||this.indexGE == undefined || this.indexGE == ''){
+					wx.showModal({
+						title:'提示',
+						content:'请完善性别',
+						success: function(){
+							return;
+						}
+					})
+					return;
+				}else if(this.indexGR == null||this.indexGR == undefined || this.indexGR == ''){
+					wx.showModal({
+						title:'提示',
+						content:'请完善年级',
+						success: function(){
+							return;
+						}
+					})
+					return;
+				}else if(this.indexAR == null||this.indexAR == undefined || this.indexAR == -1 || this.indexAR == ''){
+					wx.showModal({
+						title:'提示',
+						content:'请完善地区',
+						success: function(){
+							return;
+						}
+					})
+					return;
+				}
+ */
+	// return
+				var that = this;
+				var data = {
+					type:2, // 提交
+					username: this.inputValue,
+					sex: parseInt(this.indexGE)+1,
+					grade: parseInt(this.indexGR)-2,
+					region: this.arrayArea[this.indexAR]
+				}
+				wxRequest({method:'post',data: data},'/user').then(res => {
+					if(res.data.code == 1){
+						console.log(res)
+						that.ActicityUser.is_perfect = 1;
+						wx.setStorageSync('ActicityUser', that.ActicityUser)
+						that.$apply()
+						wx.navigateBack();
+					}else{
+						wx.showModal({
+							title: '提示',
+							content: res.data.msg,
+							showCancel: false
+						})
+					}
+        
+        // console.log(this.orderList)
+        })
+				
+			},
+
+    }
+
+		// 判断
+    judgeData() {
+			var disabled = (Boolean(this.inputValue) && Boolean(this.arrayGender[this.indexGE]) && Boolean(this.arrayGrade[this.indexGR]) &&Boolean(this.arrayArea[this.indexAR]))
+			this.disabled = !disabled
+		}
+    // // 获取用户信息
+		// getUser() {
+		// 	var that = this;
+		// 	req.wxRequest({
+		// 		api: '/user',
+		// 		query: {},
+		// 		type: 'get'
+		// 	}, true, function(res) {
+		// 		var indexGe = Boolean(res.data.sex) ? (parseInt(res.data.sex) - 1) : '';
+		// 		var indexGr = Boolean(res.data.grade) ? (parseInt(res.data.grade)) : '';
+		// 		var inputValueName = res.data.name;
+		// 		var tempIndexAr = that.data.arrayArea.indexOf(res.data.region);
+		// 		var indexAr = tempIndexAr == -1 ? "" : tempIndexAr;
+		// 		// var phoneTel = res.data.tel;
+		// 		that.setData({
+		// 			dataUser: res.data,
+		// 			indexGE: indexGe,
+		// 			indexGR: indexGr,
+		// 			inputValue: inputValueName,
+		// 			indexAR: indexAr,
+		// 			// phone: phoneTel
+		// 		});
+		// 		that.judgeData()
+		// 	});
+		// }
+    // 获取资料数据
+    getUser(){
+			let that = this;
+      wxRequest({method:'post',data:{type:1}},'/user').then(res => {
+        if(res.data.code == 1){
+					console.log(res.data.data.user)
+					if(that.ActicityUser.is_perfect == 1){
+						let user = res.data.data.user
+						that.inputValue = user.username
+						that.indexGE = user.sex-1
+						that.indexGR = user.grade+2
+						that.indexAR = that.arrayArea.findIndex( item =>{
+							return item == user.region
+						})
+					}
+					that.judgeData()
+					
+					console.log(that.indexAR)
+          that.$apply();
+        }else{
+          wx.showModal({
+            title: '提示',
+            content: res.data.msg,
+            showCancel: false
+          })
+        }
+        
+        // console.log(this.orderList)
+      })
+    }
+    
+    // 监听页面加载
+		onLoad(options) {
+			// var fromWhere = options.fromWhere;
+			// if (fromWhere) {
+			// 	this.setData({
+			// 		fromWhere: fromWhere,
+
+			// 	});
+			// }
+			this.ActicityUser = wx.getStorageSync('ActicityUser')
+			console.log(this.ActicityUser)
+			this.getUser();
+			// var title = options.title
+			// if (title) {
+			// 	wx.setNavigationBarTitle({
+			// 		title: title
+			// 	})
+			// }
+			/* if (app.globalData.userInfo) {
+				this.setData({
+					userInfo: app.globalData.userInfo,
+					headPortrait: true
+				})
+			} else {
+				// 在没有 open-type=getUserInfo 版本的兼容处理
+				wx.getUserInfo({
+					success: res => {
+						app.globalData.userInfo = res.userInfo
+						this.setData({
+							userInfo: res.userInfo,
+							headPortrait: true
+						})
+					}
+				})
+			} */
+		}
+    
+    // 页面卸载
+  	onUnload() {
+			var fromWhere = this.data.fromWhere;
+			if ('detail' == fromWhere) {
+				getApp().globalData.isIndexShowAlert = true;
+			}
+		}
+		
+		
+  
+  }
+</script>

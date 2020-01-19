@@ -17,6 +17,7 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      
     }
     button{
       width: 200rpx;
@@ -30,13 +31,28 @@
     .avtor{
       width: 180rpx;
       height:180rpx;
-      border: 5rpx solid #158938;
-      border-radius: 50%;
-      overflow: hidden;
+      
+      
+      // overflow: hidden;
       margin-bottom: 32rpx;
+      position: relative;
+      .edit-btn{
+        width:180rpx;
+        line-height:60rpx;
+        position:absolute;
+        bottom:-8rpx;
+        left:50%;
+        margin-left:-90rpx;
+        background:#158938;
+        color: #fff;
+        border-radius:60rpx;
+        text-align:center;
+      }
       image{
         width: 180rpx;
         height:180rpx;
+        border: 5rpx solid #158938;
+        border-radius: 50%;
       }
     }
   }
@@ -73,8 +89,14 @@
     <view class="orders skeleton">
       <view class="user flex">
         <view wx:if="{{ActicityUser}}" class="userinfo flex">
-          <view class="avtor skeleton-radius" ><image src="{{ActicityUser.avatar_url}}" /></view>
+          <view class="avtor skeleton-radius" >
+            <!-- is_perfect ： 0 未完善；1已完善
+status： 0拉黑；1正常 -->
+            <view class="edit-btn" @tap="goEditInfo">{{ActicityUser.is_perfect==0?'完善资料':'修改资料'}}</view>
+            <image src="{{ActicityUser.avatar_url}}" />
+            </view>
           <text class="skeleton-rect">{{ActicityUser.nick_name}}</text>
+          
         </view>
         <button wx:if="{{!ActicityUser}}"  open-type="getUserInfo" @getuserinfo="goLogin" formType="submit">登录</button>
       </view>
@@ -124,7 +146,7 @@
 
     data = {
       // token: wx.getStorageSync('token'),
-      ActicityUser: wx.getStorageSync('user'),
+      ActicityUser: wx.getStorageSync('ActicityUser'),
       orderList:[],
       showSkeleton: true
     }
@@ -137,6 +159,9 @@
       //   this.$navigate('/pages/order-detail',{orderId: activityInfo.order_id,formId:e.detail.formId})
       //   // this.$navigate('/pages/launch-group',{orderId: activityInfo.order_id,formId:e.detail.formId})
       // },
+      goEditInfo(){
+        this.$navigate('/pages/editInfo',{})
+      },
       goLogin(res){
         console.log(1111)
         console.log(res)
@@ -276,9 +301,9 @@
       // console.log(this.$parent.globalData.already)
       //因为switch不执行onLoad, 需要在onShow中再判断一次 
       // onLoad没有登录,获取onShow时的登录状态,
-      if(!this.ActicityUser){
+      // if(!this.ActicityUser){
         this.ActicityUser =  wx.getStorageSync('ActicityUser');
-      } 
+      // } 
       //检测到登录后再获取订单列表
       // if(this.ActicityUser && this.$parent.globalData.isBuy || this.$parent.globalData.already == 1){
       //   this.getOrderList();

@@ -716,71 +716,74 @@
       },
       // 点击立即报名 显示支付弹窗
       lookPay(buyType,price,res){
-        this.buy_type = buyType;
-        // console.log(res)
-        let that = this;
-        // this.token = wx.getStorageSync('token');
-        this.user = wx.getStorageSync('ActicityUser');
-        // 只有授权成功才能进行支付
-        if(res.detail.errMsg.indexOf('ok') != -1){
-         console.log(that.user)
-          if(!this.user){
-            wx.login({
-              success: re => {
-                if(re.code){
-                  let params = {
-                    method:'post',
-                    data:{
-                      code:re.code,
-                      type: 1,
-                      encrypted_data:res.detail.encryptedData,
-                      iv: res.detail.iv,
-                    }
-                  }
-                  // 登录
-                  wxRequest(params,'/login').then(r => {
-                    console.log(r)
-                      // 储存token
-                      wx.setStorageSync('token', r.data.data.token)
-  
-                      // 登录完成 跳转到登录之前的页面,并将携带用户信息
-                      this.$redirect('/pages/login',{
-                        from: '/'+this.$wxpage.route,
+          this.user = wx.getStorageSync('ActicityUser');
+          this.buy_type = buyType;
+          // console.log(res)
+          let that = this;
+          // this.token = wx.getStorageSync('token');
+          // 只有授权成功才能进行支付
+          if(res.detail.errMsg.indexOf('ok') != -1){
+          console.log(that.user)
+            if(!this.user){
+              wx.login({
+                success: re => {
+                  if(re.code){
+                    let params = {
+                      method:'post',
+                      data:{
+                        code:re.code,
+                        type: 1,
                         encrypted_data:res.detail.encryptedData,
-                        iv:res.detail.iv,
-                        activityId:this.activityId ,
-                        activityProjectStyle:this.activity.project_style,
-                        groupInviterId:this.groupInviterId,
-                        buyPrice: price,
-                        activityTitle: this.activity.project_title
-                      })
-                        
-                  })
+                        iv: res.detail.iv,
+                      }
+                    }
+                    // 登录
+                    wxRequest(params,'/login').then(r => {
+                        // 储存token
+                        wx.setStorageSync('token', r.data.data.token)
+                        // 登录完成 跳转到登录之前的页面,并将携带用户信息
+                        this.$navigate('/pages/login',{
+                          from: '/'+this.$wxpage.route,
+                          encrypted_data:res.detail.encryptedData,
+                          iv:res.detail.iv,
+                          activityId:this.activityId ,
+                          activityProjectStyle:this.activity.project_style,
+                          groupInviterId:this.groupInviterId,
+                          buyPrice: price,
+                          activityTitle: this.activity.project_title
+                        })
+                          
+                    })
+                }
               }
-            }
-            })
-          }else{
-            if(this.activity.project_style == 1){
-              this.buyPrice = price;
-              this.showPay = true;
-              this.hidePay = false;
-              this.$apply();
-            }else{
-              this.$navigate('/pages/select-school',{
-                activityId:this.activityId ,
-                order_id:this.order_id,
-                buyPrice:this.activity.project_price,
-                activityTitle:this.activity.project_title,
-                // activityWxReplyText:this.activity.project_wx_reply_text,
               })
+            }else{
+              if(this.user &&(this.user.is_perfect!= 0 && this.user.is_perfect != 1)){
+                wx.clearStorageSync()
+                return;
+              }else{
+                if(this.user.is_perfect == 0){
+                  this.$navigate('/pages/editInfo');
+                }else{
+                  if(this.activity.project_style == 1){
+                    this.buyPrice = price;
+                    this.showPay = true;
+                    this.hidePay = false;
+                    this.$apply();
+                  }else{
+                    this.$navigate('/pages/select-school',{
+                      activityId:this.activityId ,
+                      order_id:this.order_id,
+                      buyPrice:this.activity.project_price,
+                      activityTitle:this.activity.project_title,
+                    })
+                  }
+                }
+              }
+              
+              
             }
-            
           }
-          // this.buyPrice = price;
-          // this.showPay = true;
-          // this.hidePay = false;
-          // this.$apply();
-        }
       },
       // 关闭支付弹窗
       closePay(){
@@ -838,7 +841,7 @@
               if(that.activity.project_type == 1 || (that.activity.project_type == 3 && that.buy_type == 1) ){
                 that.activity.order_status = 1;
                 that.$apply();
-                that.$navigate('/pages/pay-success',{activityInfo:JSON.stringify(that.activity)});
+                that.$redirect('/pages/pay-success',{activityInfo:JSON.stringify(that.activity)});
               }else{
                 let flag = false;
                 for(let i = 0; i < that.activity.project_group_user.length; i++){
@@ -889,10 +892,14 @@
                       // console.log(re)
                       //支付成功转到拼团成功页
                       //this.$navigate('/pages/pay-success');
+                      console.log('测试.project_type')
+                      console.log(that.activity.project_type)
+                      // 单独购买 和 成团单独购买
                       if(that.activity.project_type == 1 || (that.activity.project_type == 3 && that.buy_type == 1) ){
                         that.activity.order_status = 1;
+                        
+                        that.$redirect('/pages/pay-success',{activityInfo:JSON.stringify(that.activity)});
                         that.$apply();
-                        that.$navigate('/pages/pay-success',{activityInfo:JSON.stringify(that.activity)});
                       }else{
                           let flag = false;
                           for(let i = 0; i < that.activity.project_group_user.length; i++){
@@ -912,12 +919,12 @@
                           }
                         //支付成功 order_status 为 1 
                         that.activity.order_status = 1;
-                        that.$apply();
                         if(that.activity.project_style == 1){
                           that.$navigate('/pages/launch-group',{activityInfo:JSON.stringify(that.activity),projectGroupNum:that.activity.project_group_num});
                         }else{
                           that.$navigate('/pages/pay-success-school',{activityInfo:JSON.stringify(that.activity),projectGroupNum:that.activity.project_group_num});
                         }
+                        that.$apply();
                       }
                     }
                   })
@@ -1026,7 +1033,16 @@
       wxRequest(params,'/project/item').then(res => {
         console.log('测试昵称')
         console.log(res)
+        
         this.activity = res.data.data;
+        console.log('测试昵称1')
+        console.log(this.activity)
+        if(this.activity.order_status == 1){
+          this.showPay = false
+          this.hidePay = false
+        }
+        
+        
         // res.data.data.project_group_user.pop()
         let users = res.data.data.project_group_user;
         let selfId = this.ActicityUser.user_id;
@@ -1163,8 +1179,6 @@
       }
     }
     onLoad(params) {
-      console.log(111111111111111111111111111111)
-      console.log(params)
       if(params.from == 'login'){
         // 多校区不显示
         if(params.activityProjectStyle == '2'){
@@ -1224,7 +1238,9 @@
       console.log('onShow')
       console.log(this.activity)
       this.ActicityUser = wx.getStorageSync('ActicityUser');
+      
       this.getActivity();
+     
       // console.log(this.ActivityStatus)
     }
     onHide(){
