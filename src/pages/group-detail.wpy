@@ -1060,7 +1060,6 @@
           this.ActivityStatus = 1;
         }
 
-        // console.log('ActivityStatus-ajax:'+this.ActivityStatus)
 
         if(users.length > 0){
           for(let i = 0; i < users.length; i++){
