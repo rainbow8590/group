@@ -35,6 +35,9 @@ export default class extends wepy.app {
   config = {
     "pages": [
       "pages/index", // 首页
+      "pages/login/index", // 登录页
+      "pages/login/editStudent", // 填写学员信息
+      "pages/login/selectStudent", // 选择多学员
       "pages/select-school", // 选择校区
       "pages/pay-success-school", // 选择校区时间段
       "pages/share-pic", // 生成分享图片

@@ -179,7 +179,6 @@ status： 0拉黑；1正常 -->
                     iv: res.detail.iv,
                   }
                 }
-                console.log(121212121212121)
                   // 登录
                   wxRequest(params,'/login').then(r => {
                     

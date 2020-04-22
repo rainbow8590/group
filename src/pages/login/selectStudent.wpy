@@ -1,0 +1,118 @@
+<style lang="less">
+  // @import '../util/public.less';
+  .container {
+    height: 100vh;
+    overflow: hidden;
+  }
+  .student {
+    padding-top: 60rpx;
+  }
+  .main {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 60rpx;
+  }
+  .head .h2 {
+      font-size: 64rpx;
+      font-weight: 600;
+      padding-bottom: 12rpx;
+  }
+  .head .info {
+      color: #323a43;
+      font-size: 32rpx;
+  }
+  .student .item {
+      margin-top: 40rpx;
+  }
+  .flex {
+      display: flex;
+      align-items: center;
+  }
+  image {
+      border: none;
+      vertical-align: middle;
+  }
+  .student .item image {
+      width: 120rpx;
+      height: 120rpx;
+      border-radius: 50%;
+      margin-right: 40rpx;
+  }
+  .student .item .name {
+      font-size: 40rpx;
+      display: block;
+  }
+  .student .item .info {
+      color: #999;
+      font-size: 28rpx;
+  }
+</style>
+<template>
+  <view id="app" class="container" >
+    <view class="student main">
+      <view class="head" style="height: auto;">
+          <view class="h2">选择学员账号</view>
+          <view class="info">您的手机号下存在多个学员，请选择本次登录的学员</view>
+      </view>
+
+      <view class="item flex" @tap="handGoToStuden" id="studentCode">
+          <image src="https://res-student.gaosiedu.com/avatar/2019/12/5df2d6856f4c7.png" />
+          <view class="text">
+              <text class="name">侯捧金</text>
+              <text class="name">侯捧金</text>
+              <text class="info">一年级</text>
+          </view>
+      </view>
+
+      <view class="item flex" @tap="handGoToStuden" id="studentCode">
+          <image src="https://res-student.gaosiedu.com/avatar/2019/12/5df2d6856f4c7.png" />
+          <view class="text">
+              <text class="name">侯捧金</text>
+              <text class="info">一年级</text>
+          </view>
+      </view>
+
+    </view>
+  </view>
+
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import 'wepy-async-function'
+  import wxRequest from '../../util/request'
+  
+  export default class SelectStudent extends wepy.page {
+    config = {
+      navigationBarTitleText: '选择学员'
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+      
+    }
+
+    computed = {
+      
+    }
+    
+
+    methods = {
+      handGoToStuden (e){
+          console.log(e.currentTarget.id)
+          //window.location.href = ''; 
+      },
+
+    }
+
+    events = {
+    }
+    
+    onLoad(param) {
+      
+    }
+  }
+</script>

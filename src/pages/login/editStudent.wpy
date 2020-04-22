@@ -1,0 +1,326 @@
+<style lang="less">
+  .container {
+    height: 100vh;
+    overflow: hidden;
+  }
+  .flex{
+    display: flex;
+    align-items: center;
+  }
+  .main {
+    padding: 30px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+.head .h2 {
+    font-size: 64rpx;
+    font-weight: 600;
+    padding-bottom: 40rpx;
+}
+.form-group .item {
+    height: 110rpx;
+    line-height: 110rpx;
+    background: #f6f7f8;
+    border-radius: 60rpx;
+    margin-bottom: 32rpx;
+    padding: 0 30rpx;
+    justify-content: space-between;
+}
+.input {
+    height:110rpx;
+    line-height: 110rpx;
+    font-size: 30rpx;
+    color: #323a43;
+    background: none;
+    border: 0;
+}
+.editInfo .name {
+    width: 100%;
+}
+.subForm{
+  margin-top: 80rpx;
+}
+.subForm button[disabled] {
+    background: rgba(77,202,16,.4);
+    color: #fff;
+}
+.subForm button{
+    background: rgba(77,202,16,1);
+    color: #fff;
+    height: 100rpx;
+    border-radius: 50rpx;
+}
+.arrow-right{
+  width: 16rpx;
+  height: 16rpx;
+  border: 4rpx solid #999;
+  border-bottom: none;
+  border-left: none;
+  transform: rotate(45deg)
+}
+.modal {
+    background: rgba(0,0,0,.7)!important;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 999;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.modal .center-dialog {
+    width: 88%;
+    background: #fff;
+    position: relative;
+    border-radius: 8px;
+}
+.modal .main {
+    max-width: 100%;
+    padding: 40rpx;
+}
+.modal .caption {
+    font-size: 36rpx;
+    font-weight: 600;
+    text-align: center;
+}
+.gradeModal .name {
+    font-size: 26rpx;
+    color: #333;
+    padding-bottom: 32rpx;
+    padding-left: 10rpx;
+}
+.gradeModal .item text {
+    display: inline-block;
+    text-align: center;
+    width: 30%;
+    height: 64rpx;
+    margin: 0 1% 10px;
+    line-height: 64rpx;
+    font-size: 26rpx;
+    background: #f6f6f6;
+    border-radius: 8rpx;
+    box-sizing: border-box;
+    border: 1px solid #fff;
+}
+</style>
+<template>
+  <view id="app" class="container" >
+    <view class="editStudent main">
+      <view class="head" style="height: auto;">
+          <view class="h2">完善学员信息</view>
+      </view>
+      <view class="editInfo">
+          <form bindsubmit="formSubmit" >
+              <view class="form-group">
+                      <view class="avatarBox flex justify">
+                          <view 
+                              wx:for="{{circleList}}" 
+                              class="{{isActiveSex == index ? 'activeSex' : ''}} circle"
+                              bindtap="handTabsSex(index)"
+                          >
+                              <!-- <el-avatar :size="70" :src="item.avatar"></el-avatar> -->
+                              <view class="name tac">{{item.name}}</view>
+                          </view>
+                      </view>
+                      <view class="item flex">
+                        <input 
+                            type="text" 
+                            class="input name" 
+                            placeholder="请输入学生姓名" 
+                            bindinput="getStudentName"
+                            maxlength="15"
+                        />
+                      </view>
+
+                    <view class="item flex por iconfont icon-arrow-top " bindtap="showGradeModal">
+                      <view class="{{!activeGradeName ? 'placeholder' : ''}} item-flex">{{!activeGradeName ? '请选择年级' : activeGradeName}}</view>
+                      <text class="arrow-right"></text>
+                    </view>
+
+                    <view class="button subForm">
+                      <button class="btn-bg-primary item-flex" disabled="{{submitDisabled}}" form-type="submit">确定</button>
+                    </view>
+                  
+              </view>
+          </form>
+      </view>
+
+      <!--modal-->
+      <view class="modal center-Modal gradeModal" wx:if="{{isGradeModal}}">
+          <view class="center-dialog">
+              <view class="main">
+                  <view class="caption">设置年级</view>
+                  <repeat wx:for="{{gradeList}}">
+                    <view class="item">
+                        <view class="name">{{item.name}}</view>
+                        <view class="list">
+                            <text 
+                                wx:for="{{item.items}}"
+                                wx:for-index="index2"
+                                wx:for-item="item2"
+                                data-id="{{item2.id}}"
+                                data-name="{{item2.name}}"
+                                class="{{activeGradeName == item2.name ? 'active' : ''}}"
+                                bindtap="selectClass"
+                            >{{item2.name}}</text>
+                        </view>
+                    </view>
+                  </repeat>
+              </view>
+          </view>
+      </view>
+    </view>
+  </view>
+
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import 'wepy-async-function'
+  import wxRequest from '../../util/request'
+  
+  export default class SelectStudent extends wepy.page {
+    config = {
+      navigationBarTitleText: '填写信息'
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+      submitDisabled: true,
+      isGradeModal: false,
+      activeGradeName:'',
+
+      gradeList: [{
+                    "name": "学前班",
+                    "items": [
+                        {
+                            "id": -2,
+                            "name": "小班",
+                            "activeType": true
+                        },
+                        {
+                            "id": -1,
+                            "name": "中班"
+                        },
+                        {
+                            "id": 0,
+                            "name": "大班"
+                        }
+                        ]
+                    },
+                    {
+                        "name": "小学",
+                        "items": [
+                            {
+                                "id": 1,
+                                "name": "一年级"
+                            },
+                            {
+                                "id": 2,
+                                "name": "二年级"
+                            },
+                            {
+                                "id": 3,
+                                "name": "三年级"
+                            },
+                            {
+                                "id": 4,
+                                "name": "四年级"
+                            },
+                            {
+                                "id": 5,
+                                "name": "五年级"
+                            },{
+                                "id": 6,
+                                "name": "六年级",
+                                "activeType": true
+                            }
+                        ]
+                    },
+                    {
+                        "name": "初中",
+                        "items": [
+                            {
+                                "id": 7,
+                                "name": "初一"
+                            },{
+                                "id": 8,
+                                "name": "初二"
+                            },{
+                                "id": 9,
+                                "name": "初三",
+                                "activeType": true
+                            }
+                        ]
+                    },
+                    {
+                        "name": "高中",
+                        "items": [
+                            {
+                                "id": 10,
+                                "name": "高一"
+                            },
+                            {
+                                "id": 11,
+                                "name": "高二"
+                            },
+                            {
+                                "id": 12,
+                                "name": "高三"
+                            }
+                        ]
+                    }
+                ],
+    }
+
+    computed = {
+      
+    }
+    
+    methods = {
+      // 显示选择年级
+      showGradeModal(){
+          this.isGradeModal = true
+      },
+      // 选择年级
+      selectClass(e){
+        console.log(e)
+        this.activeGradeId = e.currentTarget.dataset.id;
+        this.activeGradeName = e.currentTarget.dataset.name;
+        this.isGradeModal = false;
+
+        this.changBtnType()
+      },
+      getStudentName(e){
+        this.stuName = e.detail.value;
+        this.changBtnType()
+      },
+       
+      // 提交
+      formSubmit(){
+          console.log(this.stuName, this.activeGradeId);
+      },
+    }
+    changBtnType(){
+        if(this.stuName.length > 1  && this.activeGradeName) {
+            this.submitDisabled = false
+        }else {
+            this.submitDisabled = true
+        }
+    }
+    events = {
+    }
+    
+    onLoad(param) {
+      
+    }
+    
+  }
+</script>

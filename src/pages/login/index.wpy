@@ -1,0 +1,413 @@
+<style lang="less">
+  // @import '../util/public.less';
+  .container {
+    height: 100vh;
+    overflow: hidden;
+  }
+  .main {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0 auto;
+    padding: 60rpx;
+  }
+  .login .head {
+    height: 156rpx;
+  }
+  .head .h2 {
+      font-size: 64rpx;
+      font-weight:bold;
+      padding-bottom: 12rpx;
+  }
+  .head .info {
+      color: #323a43;
+      font-size: 32rpx;
+  }
+  .login .form-group {
+      margin: 100rpx 0;
+  }
+  .form-group .item {
+      height: 110rpx;
+      background: #f6f7f8;
+      border-radius: 60rpx;
+      margin-bottom: 32rpx;
+      padding: 0 30rpx;
+  }
+  .justify {
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+  }
+  .flex {
+      display: flex;
+      align-items: center;
+  }
+  .item-flex {
+      flex: 1;
+  }
+  .input {
+      height: 60rpx;
+      padding: 20rpx 0;
+      line-height: 60rpx;
+      font-size: 30rpx;
+      color: #323a43;
+      font-weight: bold; 
+      background: none;
+      border: 0;
+  }
+
+  .btn-bg-primary{
+    background: #4dca10;
+    color: #fff;
+  }
+  .sendCode {
+      width: 190rpx;
+      height: 60rpx;
+      line-height: 60rpx;
+      font-size: 24rpx;
+      padding: 0;
+      border-radius: 50rpx;
+  }
+  button[disabled] {
+      background-color: #efefef;
+      color: #666;
+  }
+  .subForm button {
+      height: 100rpx;
+      border-radius: 50rpx;
+  }
+  .subForm button[disabled] {
+      background: rgba(77,202,16,.4);
+      color: #fff;
+  }
+  .subForm button[disabled] {
+      background: rgba(77,202,16,.4);
+      color: #fff;
+  }
+  .navLogin {
+    margin-top: 60rpx;
+    padding: 20rpx 0;
+    font-size: 30rpx;
+    color: #989ea6;
+}
+  .tac {
+      text-align: center;
+  }
+  .foot {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 60rpx;
+  }
+  .foot .deals {
+      margin-top: 60rpx;
+      font-size: 24rpx;
+  }
+  .mediumGrayColor {
+      color: #a1a1a1;
+  }
+  .themeColor {
+      color: #4dca10;
+  }
+  /*checkbox 整体大小  */
+  checkbox {
+    width: 36rpx;
+    height: 36rpx;
+    border-radius: 50%;
+    margin-right: 10rpx;
+  }
+  /*checkbox 选项框大小  */
+  checkbox .wx-checkbox-input {
+    width: 36rpx;
+    height: 36rpx;
+    border-radius: 50%;
+  }
+  /*checkbox选中后样式  */
+  checkbox .wx-checkbox-input.wx-checkbox-input-checked {
+    background: #4dca10;
+    border-radius: 50%;
+  }
+  /*checkbox选中后图标样式  */
+  checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
+    width: 28rpx;
+    height: 28rpx;
+    line-height: 28rpx;
+    text-align: center;
+    font-size: 24rpx;
+    color: #fff;
+    background: transparent;
+    transform: translate(-50%, -50%) scale(1);
+    -webkit-transform: translate(-50%, -50%) scale(1);
+  }
+</style>
+<template>
+  <view id="app" class="container" >
+    <view class="login main">
+        <view class="head" wx:if="{{isCodeLoginType}}">
+            <view class="h2">验证码登录</view>
+            <view class="info">若手机号未注册，我们将自动为您注册</view>
+        </view>
+        <view class="head" wx:else>
+            <view class="h2">密码登录</view>
+            <view class="info"></view>
+        </view>
+        <view>
+            <form @submit="checkForm" >
+                <view class="form-group">
+                    <view class="item flex justify">
+                        <input 
+                            type="number" 
+                            class="input item-flex" 
+                            maxlength="11"
+                            placeholder="请输入手机号" 
+                            @input="keyupMoblieInput"
+                        />
+                    </view>
+                    <view class="item flex justify" wx:if="{{isCodeLoginType}}">
+                        <input 
+                            type="number" 
+                            class="input item-flex" 
+                            maxlength="4"
+                            placeholder="请输入验证码" 
+                            @input="keyupNumCodeInput"
+                        />
+                        <!--验证码-->
+                        <button
+                            type="submit"
+                            class="sendCode btn {{!codeIsDisabled?'btn-bg-primary':''}}"
+                            @tap="sendCode">{{codeTxt}}</button>
+                    </view>
+
+                    <view class="item flex justify" wx:else>
+                        <input 
+                            type="password"
+                            class="input item-flex" 
+                            placeholder="请输入密码" 
+                            @input="keyupNumCodeInput"
+                        />
+                    </view>
+
+                    <view class="subForm button flex">
+                        <button class="btn-bg-primary item-flex" disabled="{{submitDisabled}}" formType="submit">登录</button>
+                    </view>
+
+                    <view class="navLogin tac" @tap="navLoginType">{{loginTypeText}} </view>
+                    
+                    <view class="foot tac">
+                        <view class="deals mediumGrayColor flex justify">
+                          <checkbox-group bindchange="checkboxChange">
+                            <label class="checkbox" >
+                              <checkbox checked value="1" />我已阅读并同意
+                            </label>
+                          </checkbox-group>
+                          <text class="themeColor">《高思用户协议》</text>
+                          <text>及</text>
+                          <text class="themeColor">《高思隐私协议》</text>
+                        </view>
+                    </view>
+                    
+                </view>
+            </form>
+        </view>
+    </view>
+  </view>
+
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import 'wepy-async-function'
+  import wxRequest from '../../util/request'
+  
+  export default class LoginIndex extends wepy.page {
+    config = {
+      navigationBarTitleText: '登录'
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+      agreementActive: true,
+      phone: '', // 手机号
+      vcode: '',  // 验证码
+      password: '', //密码
+
+      //验证码
+      codeTxt: "获取验证码", //验证码内容
+      count: 60, //间隔函数，1秒执行
+      curCount: null, // 剩余秒
+      codeIsDisabled: true, // 按钮置灰及不能点击
+      interTimer: "", //定时器
+
+      isCodeLoginType: false, // true验证码登录 false密码登录
+      submitDisabled: true,
+      loginTypeText:''
+    }
+
+    computed = {
+      
+    }
+    // 判断登录按钮是否可用
+    changBtnType(){
+        if((this.phone.length == 11 && this.vcode.length == 4 ) || (this.phone.length == 11 && this.password.length >= 6)) {
+            this.submitDisabled = false
+        }else {
+            this.submitDisabled = true
+        }
+    }
+    // 检验手机号
+    checkPhone() {
+        if (this.phone == '') {
+            wx.showModal({
+              title: '提示',
+              content: '手机号不能为空',
+              showCancel: false,
+              duration: 1000
+            })
+            return false;
+        }
+        if (this.phone.length < 11) {
+            wx.showModal({
+              title: '提示',
+              content: '请输入正确的手机号码',
+              showCancel: false,
+              duration: 1000
+            })
+            return false;
+        }
+        return true;
+    }
+    // 倒计时
+    SetRemainTime() {
+        // 倒计时为0时
+        if (this.curCount <= 0) {
+            clearInterval(this.interTimer);
+            this.codeIsDisabled = false;
+            this.codeTxt = "重新发送";
+            this.curCount = this.count;
+            return;
+        }
+        this.codeTxt = `(${this.curCount})重新获取`;
+        this.curCount -= 1;
+
+        if (this.curCount < this.count) {
+            this.codeIsDisabled = true;
+        }
+        this.$apply()
+    }
+
+    methods = {
+      navLoginType(){
+
+      },
+
+      // 4、发送验证码按钮状态
+      keyupMoblieInput(e) {
+        this.phone = e.detail.value;
+        if (this.phone && this.phone.length >= 11) {
+            this.codeIsDisabled = false;
+        } else {
+            this.codeIsDisabled = true;
+        }
+        this.changBtnType()
+      },
+
+      //2、检验验证码
+      keyupNumCodeInput(e) {
+        if(this.isCodeLoginType){ // 验证码登录
+          this.vcode = e.detail.value;
+        }else{
+          this.password = e.detail.value
+        }
+        this.changBtnType()
+      },
+
+      
+      // 3、发送验证码
+      sendCode() {
+          if (!this.checkPhone()) {
+              return;
+          }
+          wx.showToast({
+            title: '验证码发送成功',
+            icon: 'success'
+          })
+      
+          this.curCount = this.count;
+          this.codeIsDisabled = true;
+          // 计时器
+          this.interTimer = setInterval(() => {
+              this.SetRemainTime();
+          }, 1000);
+      },
+      // 协议和规则是否选择
+      checkboxChange(e){
+        if(!e.detail.value.length){
+          this.agreementActive = false
+          return;
+        }
+        this.agreementActive = true
+      },
+
+      // 9、登录
+      checkForm(e) {
+          //e.preventDefault();
+          if (!this.agreementActive) {
+              wx.showModal({
+                title: '提示',
+                content: '请先同意《高思用户协议》与《高思隐私协议》',
+                showCancel: false,
+                duration: 2000
+              })
+              return;
+          }
+          if (!this.checkPhone()) {
+              return;
+          }
+
+          //开始登录 post
+          clearInterval(this.interTimer);
+          this.codeTxt = "发送验证码";
+          if(this.isCodeLoginType){ // 验证码登录
+            
+              // 多学员时
+              //window.location.href = `selectStudent.html`; 
+              wx.showToast({
+                title: '验证码登录成功',
+                icon: 'success'
+              })
+
+          }else { // 密码登录
+              
+              // 多学员时
+              //window.location.href = `selectStudent.html`; 
+              wx.showToast({
+                title: '密码登录成功',
+                icon: 'success'
+              })
+          }
+      },
+
+      // 切换登录方式
+      navLoginType(){
+          clearInterval(this.interTimer);
+          this.codeTxt = "发送验证码";
+          this.vcode = "";
+          this.password = "";
+          // this.keyupMoblieInput()
+          this.isCodeLoginType = !this.isCodeLoginType;
+          this.loginTypeText  = this.isCodeLoginType ? "密码登录" : "验证码登录";
+          console.log(this.isCodeLoginType)
+      }
+    }
+
+    events = {
+    }
+    
+    onLoad(param) {
+      this.loginTypeText  = this.isCodeLoginType ? "密码登录" : "验证码登录";
+    }
+
+  }
+</script>
